@@ -52,9 +52,9 @@ const Login = () => {
         password: password.value,
         phone: "0987654321",
         image: "image",
-      }
-        localStorage.setItem("user", JSON.stringify(data));
-        setUser(data);
+      };
+      localStorage.setItem("user", JSON.stringify(data));
+      setUser(data);
 
       // let requestOptions = {
       //   headers: {

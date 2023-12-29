@@ -10,22 +10,19 @@ const neededProps = [
   "unit_price",
   "latitude",
   "longitude",
+  "location",
 ];
 const template = convertPropsToObject(neededProps);
-const showAllStations = `${base_url}/admin/admin/station_list`;
-const editUrl = `${base_url}/admin/edit-worker-portal`;
-const createUrl = `${base_url}/admin/create_station/`;
-const blockUrl = `${base_url}/admin/block-worker-portal`;
+const showAllStations = `${base_url}/admin/station_list`;
+const editUrl = `${base_url}/admin/edit_station`;
+const createUrl = `${base_url}/admin/create_station`;
 const deleteUrl = (data) => {
-  const formdata = new FormData();
-  formdata.append("type", "User");
   const url = `${base_url}/admin/delete-api/${data?.id}`;
   const requestOptions = {
     headers: {
       accept: "application/json",
     },
     method: "POST",
-    body: formdata,
     redirect: "follow",
   };
   return [url, requestOptions];
@@ -60,53 +57,21 @@ const Stations = () => {
   };
 
   const initialState = {
-    id: "",
-    first_name: "",
-    last_name: "",
-    email: "",
-    _password: "",
-    phone_number: "",
-    _work_type: "",
-    _address: "",
-    _project_manager: user?.id,
-    status: "",
-    _type: "Project Manager",
+    station_name: "",
+    unit_price: "",
+    latitude: "",
+    longitude: "",
+    location: "",
   };
 
   const editModalTemplate = {
     id: "",
-    first_name: "",
-    last_name: "",
-    email: "",
-    phone_number: "",
-    _address: "",
-    _project_manager: user?.id,
-    _work_type: "",
+    station_name: "",
+    unit_price: "",
+    latitude: "",
+    longitude: "",
+    location: "",
   };
-
-  const dropdownFields = [
-    {
-      key: "status",
-      title: "status",
-      arr: ["Active", "InActive"],
-      getOption: (val) => val,
-      required: true,
-    },
-  ];
-
-  const inputFields = [
-    {
-      key: "_password",
-      pattern: "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$",
-      title:
-        "Password must contain at least one digit, one lowercase letter, one uppercase letter, and be between 8 and 20 characters long.",
-    },
-    {
-      key: "phone_number",
-      pattern: "^\\+(?:[0-9] ?){6,14}[0-9]$",
-      title: "Should follow this pattern: +21 123 4567 890",
-    },
-  ];
 
   const props = {
     title: "Stations",
@@ -115,12 +80,11 @@ const Stations = () => {
     setData,
     template,
     isLoading,
-    blockUrl,
     deleteUrl,
     search: {
       type: "text",
       onChange: search,
-      placeholder: "Search by Name, Email, Phone Num...",
+      placeholder: "Search by Name, Price, Location, lat...",
     },
     pagination: {
       paginatedData,
@@ -129,12 +93,10 @@ const Stations = () => {
     },
     createModalProps: {
       neededProps,
-      inputFields,
       initialState,
-      dropdownFields,
-      textAreaFields: ["_address"],
+      textAreaFields: ["location"],
       createUrl,
-      hideFields: ["_type", "_project_manager"],
+      hideFields: [],
       excludeFields: ["id", "created_at", "updated_at"],
       successCallback: (json) => {
         const data = modifyData(json.success.data, neededProps, true);
@@ -144,23 +106,15 @@ const Stations = () => {
           items: [data, ...prev.items],
         }));
       },
+      gridCols: 2,
     },
     editModalProps: {
       editUrl,
       template: editModalTemplate,
       neededProps,
-      dropdownFields,
-      excludeFields: [
-        "id",
-        "_type",
-        "status",
-        "created_at",
-        "updated_at",
-        "_password",
-      ],
-      inputFields,
-      hideFields: ["_project_manager"],
-      textAreaFields: ["_address"],
+      hideFields: [],
+      textAreaFields: ["location"],
+      excludeFields: ["id", "created_at", "updated_at"],
       successCallback: (json) => {
         let stateCopy = [...data];
         const updatedData = json.success.data;
@@ -172,13 +126,14 @@ const Stations = () => {
         setData(stateCopy);
         setPaginatedData((prev) => ({ ...prev, items: stateCopy }));
       },
+      gridCols: 1,
     },
     viewModalProps: {
-      excludeFields: ["created_at", "updated_at", "_type", "_password"],
-      longFields: ["_address", "_device_token"],
+      excludeFields: ["created_at", "updated_at"],
+      // longFields: ["_address", "_device_token"],
     },
     tableProps: {
-      checkboxEnabled: true,
+      checkboxEnabled: false,
     },
     headerStyles:
       "min-[490px]:flex-row min-[490px]:space-y-0 min-[490px]:space-x-2  max-[490px]:flex-col max-[490px]:space-y-2 max-[490px]:space-x-0 max-[840px]:flex-col max-[840px]:space-y-2 max-[840px]:space-x-0 !items-baseline",

@@ -18,10 +18,10 @@ export const getInputType = (key) => {
   } else if (
     str === "number" ||
     str.includes("amount") ||
-    str.includes("zip_code") ||
-    str.includes("code") ||
-    str.includes("work_budget") ||
-    str.includes("salary") ||
+    str.includes("latitude") ||
+    str.includes("longitude") ||
+    str.includes("unit_price") ||
+    str.includes("slots") ||
     str.includes("costing") ||
     str.includes("sin_number")
   ) {
