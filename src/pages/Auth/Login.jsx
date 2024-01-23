@@ -2,7 +2,7 @@ import React from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { base_url } from "../../utils/url";
+import { base_url, token } from "../../utils/url";
 import { useContext } from "react";
 import { AppContext } from "../../context";
 import { Button, Page } from "../../components";
@@ -40,54 +40,52 @@ const Login = () => {
     let json = null;
 
     try {
-      let formdata = new FormData();
+      const myHeaders = new Headers();
+      // myHeaders.append("Content-Type", "multipart/form-data");
+      // myHeaders.append("Accept", "multipart/form-data");
+      myHeaders.append(
+        "Authorization",
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTg4MTAyMjFkYWU3N2Nk"
+      );
+
+      const formdata = new FormData();
       formdata.append("email", email);
       formdata.append("password", password.value);
-      const data = {
-        id: 1,
-        first_name: "Mateen",
-        last_name: "Ahmed",
-        role: "Admin",
-        email,
-        password: password.value,
-        phone: "0987654321",
-        image: "image",
-      };
-      localStorage.setItem("user", JSON.stringify(data));
-      setUser(data);
-
-      // let requestOptions = {
-      //   headers: {
-      //     Accept: "application/json",
-      //   },
-      //   method: "POST",
-      //   body: formdata,
-      //   redirect: "follow",
+      // const data = {
+      //   id: 1,
+      //   first_name: "Mateen",
+      //   last_name: "Ahmed",
+      //   role: "Admin",
+      //   email,
+      //   password: password.value,
+      //   phone: "0987654321",
+      //   image: "image",
       // };
+      // localStorage.setItem("user", JSON.stringify(data));
+      // setUser(data);
 
-      // const res = await fetch(`${base_url}/admin/login`, requestOptions);
-      // json = await res.json();
+      const res = await fetch(`${base_url}/admin/login`, {
+        method: "POST",
+        headers: myHeaders,
+        body: formdata,
+        redirect: "follow",
+      });
 
-      // console.log(json);
+      json = await res.json();
 
-      // if (json.success) {
-      //   let data = json.success.data;
+      if (json.status) {
+        let data = json.data;
 
-      //   toast.success("Login successful!", { duration: 2000 });
-      //   localStorage.setItem("user", JSON.stringify(data));
-      //   setUser(data);
+        toast.success("Login successful!", { duration: 2000 });
+        localStorage.setItem("user", JSON.stringify(data));
+        setUser(data);
 
-      //   setTimeout(() => {
-      //     navigate("/stations");
-      //   }, 2000);
-      // } else {
-      //   toast.error(
-      //     json.error.message === "Incorrect Credential"
-      //       ? "Your Email or password is incorrect!"
-      //       : json.error.message,
-      //     { duration: 2000 }
-      //   );
-      // }
+        setTimeout(() => {
+          navigate("/stations");
+        }, 2000);
+      } else {
+        toast.error(json.message, { duration: 2000 });
+      }
     } catch (err) {
       console.error(err);
     } finally {

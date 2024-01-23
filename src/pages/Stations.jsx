@@ -5,12 +5,14 @@ import { convertPropsToObject, fetchData, modifyData } from "../utils";
 import { AppContext } from "../context";
 
 const neededProps = [
-  "id",
+  "_id",
+  // {from: "serial_no", to: "id"},
+  "serial_no",
+  "station_image",
   "station_name",
-  "unit_price",
-  "latitude",
-  "longitude",
-  "location",
+  "start_time",
+  "end_time",
+  "_location",
 ];
 const template = convertPropsToObject(neededProps);
 const showAllStations = `${base_url}/admin/station_list`;
@@ -58,7 +60,6 @@ const Stations = () => {
 
   const initialState = {
     station_name: "",
-    unit_price: "",
     latitude: "",
     longitude: "",
     location: "",
@@ -75,7 +76,7 @@ const Stations = () => {
 
   const props = {
     title: "Stations",
-    actionCols: ["View", "Edit", "Delete"],
+    actionCols: ["Ports", "View", "Edit", "Delete"],
     data,
     setData,
     template,
@@ -140,10 +141,19 @@ const Stations = () => {
   };
 
   useEffect(() => {
-    const formdata = new FormData();
+    // const formdata = new FormData();
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "multipart/form-data");
+    myHeaders.append("Accept", "multipart/form-data");
+    myHeaders.append(
+      "Authorization",
+      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTg4MTAyMjFkYWU3N2Nk"
+    );
+
     const requestOptions = {
-      method: "POST",
-      body: formdata,
+      method: "GET",
+      headers: myHeaders,
+      // body: formdata,
       redirect: "follow",
     };
 
@@ -154,6 +164,7 @@ const Stations = () => {
       url: showAllStations,
       sort: (data) => data?.sort((a, b) => b.id - a.id),
       callback: (data) => {
+        console.log("data", data);
         setData(data);
         setPaginatedData((prev) => ({ ...prev, items: data }));
       },

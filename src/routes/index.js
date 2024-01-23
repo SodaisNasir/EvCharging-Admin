@@ -1,10 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Layout, MainLoader } from "../components";
 import { AppContext } from "../context";
 import {
@@ -16,7 +11,7 @@ import {
   EmailVerification,
   AccessDenied,
   Stations,
-  Ports
+  Ports,
 } from "../pages";
 import { base_url } from "../utils/url";
 
@@ -25,34 +20,38 @@ const Router = () => {
   const { user, setUser } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(true);
 
-
   const accessPrivateRoutes = (Page) => (user ? <Page /> : <AccessDenied />);
   const accessPublicRoutes = (Page) =>
     user ? <Navigate to="/stations" /> : <Page />;
 
-  const login = async (email, password, role) => {
+  const login = async (email, password) => {
     setIsLoading(true);
-    let json = null;
 
     try {
-      let formdata = new FormData();
+      const myHeaders = new Headers();
+      myHeaders.append(
+        "Authorization",
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTg4MTAyMjFkYWU3N2Nk"
+      );
+
+      const formdata = new FormData();
       formdata.append("email", email);
       formdata.append("password", password);
 
-      let requestOptions = {
-        headers: {
-          Accept: "application/json",
-        },
+      const requestOptions = {
+        headers: myHeaders,
         method: "POST",
         body: formdata,
         redirect: "follow",
       };
 
       const res = await fetch(`${base_url}/admin/login`, requestOptions);
-      json = await res.json();
+      const json = await res.json();
+      console.log('json', json)
 
-      if (json.success) {
-        let data = json.success.data;
+      if (json.status) {
+        const data = json.data;
+        console.log("user", data);
 
         setUser(data);
       } else {
@@ -72,11 +71,7 @@ const Router = () => {
     const user_data = JSON.parse(localStorage.getItem("user"));
 
     if (user_data) {
-      login(
-        user_data.email || user_data.company_email,
-        user_data.password,
-        user_data.role
-      );
+      login(user_data.email, user_data.password);
     } else {
       setTimeout(() => {
         setIsLoading(false);
@@ -95,9 +90,15 @@ const Router = () => {
             path="/"
             element={user ? <Layout /> : <Navigate to="/login" replace />}
           >
-            <Route path="/ports" element={accessPrivateRoutes(Ports)} />
+            <Route
+              path="/ports/:station_id"
+              element={accessPrivateRoutes(Ports)}
+            />
             <Route path="/stations" element={accessPrivateRoutes(Stations)} />
-            <Route path="/edit-profile" element={accessPrivateRoutes(EditProfile)} />
+            <Route
+              path="/edit-profile"
+              element={accessPrivateRoutes(EditProfile)}
+            />
           </Route>
 
           <Route path="*" element={<Page404 />} />

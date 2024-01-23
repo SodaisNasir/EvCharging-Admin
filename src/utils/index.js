@@ -83,10 +83,10 @@ export const fetchData = async ({
     const json = await res.json();
 
     console.log("response =>", json);
-    if (json.success) {
-      let data = json.success.data.length
-        ? modifyData(json.success.data, neededProps)
-        : json.success.data;
+    if (json.status) {
+      let data = json.data.length
+        ? modifyData(json.data, neededProps)
+        : json.data;
       data = sort && data?.length ? sort(data) : data;
 
       setData && setData(data);

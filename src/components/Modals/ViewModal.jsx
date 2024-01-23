@@ -8,6 +8,7 @@ const ViewModal = ({
   longFields = [],
   linkFields = [],
   imageFields = [],
+  coordinates = [],
 }) => {
   const data = viewModal.data;
   const keys = Object.keys(data).filter((e) => !excludeFields.includes(e));

@@ -3,14 +3,15 @@ import { base_url } from "../utils/url";
 import { useState, useEffect, useContext } from "react";
 import { convertPropsToObject, fetchData, modifyData } from "../utils";
 import { AppContext } from "../context";
+import { useParams } from "react-router-dom";
 
-const neededProps = ["station_id", "port_type", "slots"];
+const neededProps = ["station_id", "port_image", "port_name", "port_type", "port_description", "unit_price"];
 const template = convertPropsToObject(neededProps);
 const showAllPorts = `${base_url}/admin/station_port_list`;
 const editUrl = `${base_url}/admin/edit_station_port`;
 const createUrl = `${base_url}/admin/create_station_port`;
 const deleteUrl = (data) => {
-  const url = `${base_url}/admin/station_port_list/${data?.id}`;
+  const url = `${base_url}/admin/station_port_list/${data?._id}`;
   const requestOptions = {
     headers: {
       accept: "application/json",
@@ -22,6 +23,7 @@ const deleteUrl = (data) => {
 };
 
 const Ports = () => {
+  const { station_id } = useParams();
   const { user } = useContext(AppContext);
   const [, setSearchText] = useState("");
   const [data, setData] = useState(null);
@@ -121,8 +123,17 @@ const Ports = () => {
 
   useEffect(() => {
     const formdata = new FormData();
+    formdata.append("station_id", station_id);
+
+    const myHeaders = new Headers();
+    myHeaders.append(
+      "Authorization",
+      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTg4MTAyMjFkYWU3N2Nk"
+    );
+
     const requestOptions = {
       method: "POST",
+      headers: myHeaders,
       body: formdata,
       redirect: "follow",
     };
@@ -138,7 +149,7 @@ const Ports = () => {
         setPaginatedData((prev) => ({ ...prev, items: data }));
       },
     });
-  }, [user]);
+  }, [station_id]);
 
   return <GeneralPage {...props} />;
 };

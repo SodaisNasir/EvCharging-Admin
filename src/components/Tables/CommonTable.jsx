@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import Actions from "../Actions";
-import { image_base_url } from "../../utils/url";
+import { image_base_url, station_image_base_url } from "../../utils/url";
 
 const CommonTable = ({
   state,
@@ -20,6 +20,14 @@ const CommonTable = ({
 
   const removeUnderscore = (str) =>
     str.replace(/^.|_./g, (match) => match.toUpperCase()).replace(/_/g, " ");
+    
+  const imageBaseUrl = useMemo(() => {
+    if (props.title === "Stations") {
+      return station_image_base_url;
+    } else {
+      return image_base_url;
+    }
+  }, [props.title])
 
   const handleSelectAll = (e) => {
     const isChecked = e.target.checked;
@@ -114,7 +122,7 @@ const CommonTable = ({
                         className="px-6 py-4 text-xs text-center whitespace-nowrap md:whitespace-normal"
                       >
                         <img
-                          src={image_base_url + data[key]}
+                          src={imageBaseUrl + data[key]}
                           alt={key}
                           className="object-cover object-center h-10 mx-auto origin-center"
                         />

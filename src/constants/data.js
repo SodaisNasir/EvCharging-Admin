@@ -1,6 +1,6 @@
 import React from "react";
 import { GiSandsOfTime } from "react-icons/gi";
-import { FaChargingStation, FaCheck, FaClipboardList, FaFileInvoiceDollar, FaMegaport } from "react-icons/fa";
+import { FaChargingStation, FaCheck, FaClipboardList, FaFileInvoiceDollar } from "react-icons/fa";
 import { IoIosNotifications, IoMdBriefcase } from "react-icons/io";
 import { FaPersonDigging } from "react-icons/fa6";
 import { BsPersonBadgeFill } from "react-icons/bs";
@@ -14,12 +14,6 @@ export const navLinks = [
     icon: <FaChargingStation className="-ml-0.5 text-xl" />,
     path: "/stations",
     title: "stations",
-  },
-  {
-    id: 2,
-    icon: <FaMegaport className="-ml-0.5 text-xl" />,
-    path: "/ports",
-    title: "ports",
   },
 ];
 

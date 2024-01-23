@@ -130,6 +130,7 @@ const GeneralPage = ({
               setState: setData,
               state: pagination?.paginatedData?.curItems,
               props: {
+                title,
                 blockUrl,
                 deleteUrl,
                 setViewModal,
