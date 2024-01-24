@@ -8,11 +8,19 @@ module.exports = {
         mont: "Montserrat",
         emoji: "Noto Color Emoji",
       },
-      // colors: {
-      //   primary: "#2563eb",
-      //   "primary-tint": "#3b82f6",
-      //   "primary-shade": "#1d4ed8",
-      // },
+      colors: {
+        primary: {
+          100: "#a1daaa",
+          200: "#8ed298",
+          300: "#68c376",
+          400: "#55bc65",
+          500: "#42b454",
+          600: "#3ba24c",
+          700: "#359043",
+          800: "#2e7e3b",
+          900: "#286c32",
+        },
+      },
       screens: {
         xs: "480px",
         sm: "640px",

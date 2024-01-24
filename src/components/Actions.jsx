@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { AiFillEye, AiFillFolderOpen } from "react-icons/ai";
-import { FaMegaport, FaMoneyCheck, FaTasks } from "react-icons/fa";
 import { FaFileVideo, FaFileImage } from "react-icons/fa6";
+import { FaMegaport } from "react-icons/fa";
 import { CgUnblock } from "react-icons/cg";
-import { TbDiscountCheckFilled } from "react-icons/tb";
 import {
   MdBlock,
   MdDelete,
@@ -11,24 +10,19 @@ import {
   MdNotificationAdd,
 } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { base_url } from "../utils/url";
-import { modifyData } from "../utils";
+import toast from "react-hot-toast";
 
 const Actions = ({
   id,
   data,
   setData,
   actionCols,
-  neededProps,
   setPaginatedData,
   setEditModal,
   setMediaModal,
   setViewModal,
   setImagesViewer,
   setVideosViewer,
-  setMarkPaidModal,
-  setPaymentModal,
-  setMarkReceivedModal,
   setNotificationModal,
   blockUrl,
   deleteUrl,
@@ -41,25 +35,36 @@ const Actions = ({
   const remove = async () => {
     try {
       const isFunction = typeof deleteUrl === "function";
-      const requestOptions = {
-        headers: {
-          accept: "application/json",
-        },
-        method: "POST",
-        redirect: "follow",
-      };
-      const res = await fetch(
-        ...(isFunction
-          ? deleteUrl(data)
-          : [`${deleteUrl}/${id}`, requestOptions])
+      const formdata = new FormData();
+      formdata.append("_id", data._id);
+      console.log("_id", data._id);
+      const headers = new Headers();
+      headers.append(
+        "Authorization",
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTg4MTAyMjFkYWU3N2Nk"
       );
 
-      if (res.status === 200) {
-        setData((prev) => prev.filter((e) => e.id !== id));
+      const requestOptions = {
+        headers,
+        method: "POST",
+        redirect: "follow",
+        body: formdata,
+      };
+      const res = await fetch(
+        ...(isFunction ? deleteUrl(data) : [deleteUrl, requestOptions])
+      );
+      const json = await res.json();
+      console.log("json", json);
+
+      if (json.status) {
+        setData((prev) => prev.filter((e) => e._id !== data._id));
         setPaginatedData((prev) => ({
           ...prev,
-          items: prev.items.filter((e) => e.id !== id),
+          items: prev.items.filter((e) => e._id !== data._id),
         }));
+        toast.status(json.message);
+      } else if (!json.status) {
+        toast.error(json.message);
       }
     } catch (err) {
       console.error(err);

@@ -143,13 +143,6 @@ const CommonTable = ({
                       >
                         {new Date(data[key]).toDateString()}
                       </td>
-                    ) : key.includes("time") && data[key] ? (
-                      <td
-                        key={key + data.id}
-                        className="px-6 py-4 text-xs text-center whitespace-nowrap md:whitespace-normal"
-                      >
-                        {new Date(data[key]).toTimeString()}
-                      </td>
                     ) : data[key] !== null &&
                       data[key] !== undefined &&
                       data[key] !== "" ? (

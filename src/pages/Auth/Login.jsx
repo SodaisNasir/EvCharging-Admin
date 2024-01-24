@@ -101,7 +101,7 @@ const Login = () => {
       <main className="w-full max-w-sm mx-4">
         <section className="w-full overflow-hidden bg-white border rounded-lg shadow-2xl pb-9">
           <div className="px-6">
-            <h1 className="my-5 text-xl font-bold text-center text-blue-600">
+            <h1 className="my-5 text-xl font-bold text-center text-primary-600">
               EvCharging Administator
             </h1>
 
@@ -113,23 +113,23 @@ const Login = () => {
                   id="email"
                   onChange={handleChange}
                   value={email}
-                  className="block w-full px-4 py-3 text-xs font-medium text-gray-900 bg-gray-100 rounded-md outline-none focus:ring-blue-500 focus:border-blue-500 caret-blue-400"
+                  className="block w-full px-4 py-3 text-xs font-medium text-gray-900 bg-gray-100 rounded-md outline-none focus:ring-primary-500 focus:border-primary-500 caret-primary-400"
                   placeholder="Email"
                   required={true}
                 />
               </div>
-              <div className="flex items-center w-full mb-1 overflow-hidden text-xs font-medium text-gray-900 bg-gray-100 rounded-md focus:ring-blue-500 focus:border-blue-500">
+              <div className="flex items-center w-full mb-1 overflow-hidden text-xs font-medium text-gray-900 bg-gray-100 rounded-md focus:ring-primary-500 focus:border-primary-500">
                 <input
                   type={password.isVisible ? "text" : "password"}
                   name="password"
                   id="password"
                   onChange={handleChange}
                   value={password.value}
-                  className="w-full px-4 py-3 text-gray-900 bg-gray-100 outline-none caret-blue-400"
+                  className="w-full px-4 py-3 text-gray-900 bg-gray-100 outline-none caret-primary-400"
                   placeholder="Password"
                   required={true}
                 />
-                <div className="w-10 text-lg text-blue-500">
+                <div className="w-10 text-lg text-primary-500">
                   {password.isVisible ? (
                     <AiFillEyeInvisible
                       onClick={togglePassword}
@@ -146,7 +146,7 @@ const Login = () => {
               <div className="w-full text-right text-[11px] font-medium mb-3 mt-2">
                 <Link
                   to="/forgot-password"
-                  className="hover:text-blue-400 hover:underline"
+                  className="hover:text-primary-400 hover:underline"
                 >
                   Forgot Password?
                 </Link>

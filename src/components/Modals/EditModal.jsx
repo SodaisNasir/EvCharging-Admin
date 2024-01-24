@@ -50,12 +50,12 @@ const EditModal = ({
         );
         key = typeof key === "object" ? key.from : key.replace(/^_/, "");
 
-        console.log(key, state[item]);
         if (appendableKeys.includes(key)) {
           const data = appendableFields?.[appendableKeys.indexOf(key)];
           data?.appendFunc(key, state[item], formdata);
         } else {
           formdata.append(key, state[item]);
+          console.log(key, state[item]);
         }
       });
 
@@ -68,15 +68,12 @@ const EditModal = ({
         redirect: "follow",
       };
 
-      const res = await fetch(
-        `${editUrl}/${editModal?.data?.id}`,
-        requestOptions
-      );
+      const res = await fetch(editUrl, requestOptions);
       const json = await res.json();
 
       console.log("json", json);
 
-      if (json.success) {
+      if (json.status) {
         successCallback && successCallback(json);
         close();
       }
@@ -167,6 +164,7 @@ const EditModal = ({
                     state: state[elem],
                     setState: (val) => setValue(elem, val),
                     required,
+                    gridCols,
                   }}
                 />
               );
@@ -185,6 +183,7 @@ const EditModal = ({
                     setState: (val) => setValue(elem, val),
                     required,
                     arr,
+                    gridCols
                   }}
                 />
               );

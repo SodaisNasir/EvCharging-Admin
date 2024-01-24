@@ -1,13 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { navLinks } from "../constants/data";
 import { VscClose } from "react-icons/vsc";
-import { AppContext } from "../context";
 
 const Navbar = ({ toggle, setToggle }) => {
-  const { user } = useContext(AppContext);
-  const role = user?.role === "1" ? "Company" : "Project Manager";
-
   return (
     <>
       <nav
@@ -57,8 +53,8 @@ const NavItem = ({ data }) => {
         to={data.path}
         className={({ isActive }) => {
           return `${
-            isActive ? "text-blue-500 font-semibold" : "text-[#091A35]"
-          } flex items-center hover:text-blue-500 my-4`;
+            isActive ? "text-primary-500 font-semibold" : "text-[#091A35]"
+          } flex items-center hover:text-primary-500 my-4`;
         }}
       >
         {/* <img className="w-4" src={data.icon} alt="icon" /> */}
@@ -74,7 +70,7 @@ const NavItem = ({ data }) => {
   return (
     <>
       <div
-        className="flex items-center my-4 mb-2 cursor-pointer text-[#091A35] hover:text-blue-500"
+        className="flex items-center my-4 mb-2 cursor-pointer text-[#091A35] hover:text-primary-500"
         onClick={() => setToggle(!toggle)}
       >
         {/* <img className="w-4" src={data.icon} alt="icon" /> */}

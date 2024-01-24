@@ -15,7 +15,7 @@ export const DropdownContainer = ({
   return (
     <ul
       onClick={onClick}
-      className={`absolute top-[110%] right-0 flex flex-col text-xs bg-white/30 backdrop-blur-[10px] rounded-md px-4 py-1 shadow-md border z-10 ${extraStyles}`}
+      className={`absolute top-[110%] right-0 flex flex-col text-xs bg-white/30 backdrop-blur-[12px] rounded-md px-4 py-1 shadow-md border z-10 ${extraStyles}`}
       {...props}
     >
       {children}
@@ -35,12 +35,12 @@ const Account = ({ toggle, setSingleToggle }) => {
   const arr = [
     {
       title: "Change Password",
-      icon: <MdLock className="text-base text-blue-500" />,
+      icon: <MdLock className="text-base text-primary-500" />,
       clickHandler: () => navigate("/change-password"),
     },
     {
       title: "Edit Profile",
-      icon: <RiEdit2Fill className="text-base text-blue-500" />,
+      icon: <RiEdit2Fill className="text-base text-primary-500" />,
       clickHandler: () => navigate("/edit-profile"),
     },
     {
@@ -85,7 +85,7 @@ const Account = ({ toggle, setSingleToggle }) => {
                   : indx === 0
                   ? "mb-0"
                   : "my-0"
-              } rounded-md p-2 py-1.5 cursor-pointer text-gray-800 hover:bg-blue-300/40 hover:text-black`}
+              } rounded-md p-2 py-1.5 cursor-pointer text-gray-800 hover:bg-primary-300/40 hover:text-black`}
             >
               {elem.icon}
               <span className="ml-2 whitespace-nowrap">{elem.title}</span>

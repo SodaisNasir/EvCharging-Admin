@@ -74,9 +74,9 @@ const CreateModal = ({
 
       console.log("json", json);
 
-      if (json?.error?.status === 400) {
-        toast.error(json.error.message);
-      } else if (json.success) {
+      if (!json.status) {
+        toast.error(json.message);
+      } else if (json.status) {
         successCallback && successCallback(json);
         close();
       }
@@ -170,6 +170,7 @@ const CreateModal = ({
                     required: data?.hasOwnProperty("required")
                       ? data.required
                       : required,
+                      gridCols
                   }}
                 />
               );
@@ -188,6 +189,7 @@ const CreateModal = ({
                     setState: (val) => setValue(elem, val),
                     required,
                     arr,
+                    gridCols
                   }}
                 />
               );
@@ -198,7 +200,7 @@ const CreateModal = ({
                 : {};
 
               return (
-                <div key={elem} className="col-span-2 sm:col-span-1">
+                <div key={elem} className={gridCols === 2 ? "col-span-2 sm:col-span-1" : "col-span-1"}>
                   <label
                     htmlFor={elem}
                     className="block mb-1 text-xs font-medium capitalize"

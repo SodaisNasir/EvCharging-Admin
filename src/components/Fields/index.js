@@ -5,7 +5,7 @@ export const TextArea = (props) => {
   const title = elem.replace(/_/g, " ").toLowerCase().trim();
 
   return (
-    <div className={gridCols === 2 ? "col-span-2" : "col-span-1"}>
+    <div className={gridCols === 2 ? "col-span-2" : "col-span-2 sm:col-span-1"}>
       <label
         htmlFor={title}
         className="block mb-2 text-xs font-medium text-gray-900 capitalize"
@@ -36,6 +36,7 @@ export const DropdownField = ({
   required = false,
   getValue = getOption,
   emptySelection = true,
+  gridCols = 2
 }) => {
   const name = title.replace(/_/g, " ").toLowerCase();
   const handleChange = (e) => {
@@ -44,7 +45,7 @@ export const DropdownField = ({
   };
 
   return (
-    <div>
+    <div className={gridCols === 2 ? "col-span-2 sm:col-span-1" : "col-span-1"}>
       {label && (
         <label
           htmlFor={name}
@@ -90,6 +91,7 @@ export const UploadField = ({
   canUploadMultiple = false,
   required = false,
   setState,
+  gridCols
 }) => {
   const handleChange = (e) => {
     const media = canUploadMultiple ? e.target.files : e.target.files[0];
@@ -97,7 +99,7 @@ export const UploadField = ({
   };
 
   return (
-    <div>
+    <div  className={gridCols === 2 ? "col-span-2 sm:col-span-1" : "col-span-1"}>
       <label
         className="block mb-2 text-xs font-medium text-gray-900 capitalize"
         htmlFor={title}
@@ -124,9 +126,10 @@ export const DateField = ({
   required = true,
   containerStyles = "",
   titleStyles = "",
+  gridCols
 }) => {
   return (
-    <div className={containerStyles}>
+    <div className={`${containerStyles} ${gridCols === 2 ? "col-span-2 sm:col-span-1" : "col-span-1"}`}>
       <label
         className={`block mb-2 text-xs font-medium text-gray-900 capitalize ${titleStyles}`}
       >
