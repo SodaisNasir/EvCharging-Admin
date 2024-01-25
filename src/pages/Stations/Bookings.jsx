@@ -1,31 +1,32 @@
 import GeneralPage from "../GeneralPage";
-import { base_url } from "../../utils/url";
+import { base_url, token } from "../../utils/url";
 import { useState, useEffect } from "react";
-import { convertPropsToObject, fetchData } from "../../utils";
+import { convertPropsToObject, fetchData, modifyData } from "../../utils";
 import { useParams } from "react-router-dom";
-import toast from "react-hot-toast";
 
 const neededProps = [
-  // {from: "_id", to: "_id"},
   "_id",
-  "station_id",
-  "port_image",
-  "port_name",
-  "port_type",
-  "unit_price",
-  "port_description",
+  "_user_id",
+  "_station_id",
+  "_port_id",
+  "transaction_id",
+  "amount",
+  "start_time",
+  "end_time",
+  "date",
+  "_account_type",
+  "status",
 ];
 const template = convertPropsToObject(neededProps);
 const showAllBookings = `${base_url}/admin/station_detail`;
-const editUrl = `${base_url}/admin/edit_station_port`;
-const createUrl = `${base_url}/admin/create_station_port`;
-const deleteUrl = `${base_url}/admin/delete_port`;
+const cancelUrl = `${base_url}/admin/cancel_booking`;
 
 const Bookings = () => {
   const { station_id } = useParams();
   const [, setSearchText] = useState("");
   const [data, setData] = useState(null);
   const [reload, setReload] = useState(false);
+  const [station, setStation] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [paginatedData, setPaginatedData] = useState({
     items: [],
@@ -42,89 +43,46 @@ const Bookings = () => {
       setPaginatedData((prev) => ({
         ...prev,
         items: data.filter((item) =>
-          Object.keys(template).some((key) =>
-            String(item?.[key])?.toLowerCase()?.includes(str?.toLowerCase())
-          )
+          Object.keys(template).some((key) => {
+            const amountMatched = dollarFields.some((e) =>
+              ("$" + Number(item?.[e]).toFixed(2)).includes(str)
+            );
+            const othersMatched = String(item?.[key])
+              ?.toLowerCase()
+              ?.includes(str?.toLowerCase());
+
+            return amountMatched || othersMatched;
+          })
         ),
       }));
     }
   };
 
-  const initialState = {
-    station_id,
-    port_image: "",
-    port_name: "",
-    port_type: "",
-    unit_price: "",
-    port_description: "",
-  };
-
-  const uploadFields = [
-    {
-      key: "port_image",
-      title: "Port Image",
-    },
-  ];
-
-  const appendableFields = [
-    {
-      key: "id",
-      appendFunc: (key, value, formdata) => {
-        formdata.append("_id", value);
-        console.log("_id", value);
-      },
-    },
-  ];
+  const dollarFields = ["amount"];
 
   const props = {
-    title: "Bookings",
-    actionCols: ["Edit", "Delete"],
+    title: `Bookings ${station ? "- " + station.station_name : ""}`,
+    actionCols: ["View", "Cancel Booking"],
     data,
     setData,
     template,
     isLoading,
-    deleteUrl,
+    actions: {
+      cancelUrl,
+    },
     search: {
       type: "text",
       onChange: search,
-      placeholder: "Search by ID, Port or Slots",
+      placeholder: "Search by IDs, Amount, Time, Date...",
     },
     pagination: {
       paginatedData,
       setPaginatedData,
       curLength: paginatedData.items.length,
     },
-    createModalProps: {
-      createUrl,
-      neededProps,
-      initialState,
-      uploadFields,
-      hideFields: ["station_id"],
-      textAreaFields: ["port_description"],
-      excludeFields: ["_id", "created_at", "updated_at"],
-      successCallback: (json) => {
-        setReload((prev) => !prev);
-        toast.success(json.message);
-      },
-      gridCols: 2,
-    },
-    editModalProps: {
-      editUrl,
-      template,
-      neededProps,
-      uploadFields,
-      appendableFields,
-      hideFields: [],
-      textAreaFields: ["port_description"],
-      excludeFields: ["_id", "station_id", "created_at", "updated_at"],
-      successCallback: (json) => {
-        setReload((prev) => !prev);
-        toast.success(json.message);
-      },
-      gridCols: 2,
-    },
     tableProps: {
       checkboxEnabled: false,
+      dollarFields,
     },
     headerStyles:
       "min-[490px]:flex-row min-[490px]:space-y-0 min-[490px]:space-x-2  max-[490px]:flex-col max-[490px]:space-y-2 max-[490px]:space-x-0 max-[840px]:flex-col max-[840px]:space-y-2 max-[840px]:space-x-0 !items-baseline",
@@ -132,13 +90,10 @@ const Bookings = () => {
 
   useEffect(() => {
     const formdata = new FormData();
-    formdata.append("station_id", station_id);
+    formdata.append("_id", station_id);
 
     const myHeaders = new Headers();
-    myHeaders.append(
-      "Authorization",
-      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTg4MTAyMjFkYWU3N2Nk"
-    );
+    myHeaders.append("Authorization", `Bearer ${token}`);
 
     const requestOptions = {
       method: "POST",
@@ -148,14 +103,14 @@ const Bookings = () => {
     };
 
     fetchData({
-      neededProps,
       setIsLoading,
       requestOptions,
       url: showAllBookings,
-      sort: (data) => data?.sort((a, b) => b.id - a.id),
       callback: (data) => {
-        setData(data);
-        setPaginatedData((prev) => ({ ...prev, items: data }));
+        const bookings = modifyData(data.bookings, neededProps, false);
+        setStation(data);
+        setData(bookings);
+        setPaginatedData((prev) => ({ ...prev, items: bookings }));
       },
     });
   }, [station_id, reload]);

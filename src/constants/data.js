@@ -1,16 +1,25 @@
 import React from "react";
 import { GiSandsOfTime } from "react-icons/gi";
-import { FaChargingStation, FaCheck, FaClipboardList, FaFileInvoiceDollar } from "react-icons/fa";
+import { FaChargingStation, FaCheck, FaClipboardList, FaFileInvoiceDollar, FaUsers } from "react-icons/fa";
 import { IoIosNotifications, IoMdBriefcase } from "react-icons/io";
 import { FaPersonDigging } from "react-icons/fa6";
 import { BsPersonBadgeFill } from "react-icons/bs";
 import { MdCoPresent, MdOutlinePlaylistAddCheck } from "react-icons/md";
 import { RxLapTimer } from "react-icons/rx";
 
+// Home route
+export const homeRoute = "/users";
+
 // NavLinks
 export const navLinks = [
   {
     id: 1,
+    icon: <FaUsers className="-ml-0.5 text-xl" />,
+    path: "/users",
+    title: "users",
+  },
+  {
+    id: 2,
     icon: <FaChargingStation className="-ml-0.5 text-xl" />,
     path: "/stations",
     title: "stations",

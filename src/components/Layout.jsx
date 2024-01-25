@@ -1,11 +1,10 @@
-import React, { useContext, useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import Navbar from "./Navbar";
+import { homeRoute } from "../constants/data";
 import { FaBars } from "react-icons/fa";
-import { AppContext } from "../context";
+import Navbar from "./Navbar";
 
 const Layout = () => {
-  const { user } = useContext(AppContext);
   const [toggle, setToggle] = useState(false);
   const location = useLocation();
 
@@ -13,7 +12,7 @@ const Layout = () => {
     setToggle(false);
   }, [location]);
 
-  if (window.location.pathname === "/") return <Navigate to="/stations" />;
+  if (window.location.pathname === "/") return <Navigate to={homeRoute} />;
 
   return (
     <div className="relative flex h-screen font-poppins">

@@ -12,6 +12,8 @@ const CommonTable = ({
   paginatedData,
   actionCols = [],
   hideFields = [],
+  dateFields = [],
+  dollarFields = [],
   setPaginatedData,
   excludeFields = [],
   checkboxEnabled = false,
@@ -20,14 +22,14 @@ const CommonTable = ({
 
   const removeUnderscore = (str) =>
     str.replace(/^.|_./g, (match) => match.toUpperCase()).replace(/_/g, " ");
-    
+
   const imageBaseUrl = useMemo(() => {
     if (props.title === "Stations") {
       return station_image_base_url;
     } else {
       return image_base_url;
     }
-  }, [props.title])
+  }, [props.title]);
 
   const handleSelectAll = (e) => {
     const isChecked = e.target.checked;
@@ -113,44 +115,54 @@ const CommonTable = ({
                   )}
 
                   {keys.map((key) => {
+                    const value = data[key];
+                    const tableCellKey = key + (data._id || data.id);
+
                     if (hideFields.includes(key) || key?.at(0) === "_")
                       return "";
 
-                    return key.includes("image") && data[key] ? (
+                    return key.includes("image") && value ? (
                       <td
-                        key={key + data.id}
+                        key={tableCellKey}
                         className="px-6 py-4 text-xs text-center whitespace-nowrap md:whitespace-normal"
                       >
                         <img
-                          src={imageBaseUrl + data[key]}
+                          src={imageBaseUrl + value}
                           alt={key}
                           className="object-cover object-center h-10 mx-auto origin-center"
                         />
                       </td>
                     ) : key.includes("date") &&
                       key.includes("time") &&
-                      data[key] ? (
+                      value ? (
                       <td
-                        key={key + data.id}
+                        key={tableCellKey}
                         className="px-6 py-4 text-xs text-center whitespace-nowrap md:whitespace-normal"
                       >
-                        {new Date(data[key]).toLocaleString()}
+                        {new Date(value).toLocaleString()}
                       </td>
-                    ) : key.includes("date") && data[key] ? (
+                    ) : dateFields.includes(key) && value ? (
                       <td
-                        key={key + data.id}
+                        key={tableCellKey}
                         className="px-6 py-4 text-xs text-center whitespace-nowrap md:whitespace-normal"
                       >
-                        {new Date(data[key]).toDateString()}
+                        {new Date(value).toDateString()}
                       </td>
-                    ) : data[key] !== null &&
-                      data[key] !== undefined &&
-                      data[key] !== "" ? (
+                    ) : dollarFields.includes(key) && value ? (
                       <td
-                        key={key + data.id}
+                        key={tableCellKey}
                         className="px-6 py-4 text-xs text-center whitespace-nowrap md:whitespace-normal"
                       >
-                        {data[key]}
+                        ${Number(value).toFixed(2)}
+                      </td>
+                    ) : value !== null &&
+                      value !== undefined &&
+                      value !== "" ? (
+                      <td
+                        key={tableCellKey}
+                        className="px-6 py-4 text-xs text-center whitespace-nowrap md:whitespace-normal"
+                      >
+                        {value}
                       </td>
                     ) : (
                       <td

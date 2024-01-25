@@ -46,6 +46,8 @@ const ViewModal = ({
             <div className="p-5 space-y-6 max-h-[72vh] overflow-y-scroll">
               <div className="grid grid-cols-6 gap-3">
                 {keys.map((elem) => {
+                  const title = elem.replace(/_/g, " ").replace(/^id|\sid/ig, (match) => match.toUpperCase());
+
                   if (hideFields.includes(elem)) return null;
 
                   return (
@@ -60,7 +62,7 @@ const ViewModal = ({
                       <p
                         className={`block mb-1.5 text-sm font-semibold text-gray-900 capitalize`}
                       >
-                        {elem === "id" ? "ID" : elem.replace(/_/g, " ")}
+                        {title}
                       </p>
                       <p
                         className={`w-full block font-medium ${

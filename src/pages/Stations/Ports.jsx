@@ -1,12 +1,11 @@
 import GeneralPage from "../GeneralPage";
-import { base_url } from "../../utils/url";
+import { base_url, token } from "../../utils/url";
 import { useState, useEffect } from "react";
 import { convertPropsToObject, fetchData } from "../../utils";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const neededProps = [
-  // {from: "_id", to: "_id"},
   "_id",
   "station_id",
   "port_image",
@@ -42,13 +41,22 @@ const Ports = () => {
       setPaginatedData((prev) => ({
         ...prev,
         items: data.filter((item) =>
-          Object.keys(template).some((key) =>
-            String(item?.[key])?.toLowerCase()?.includes(str?.toLowerCase())
-          )
+          Object.keys(template).some((key) => {
+            const amountMatched = dollarFields.some((e) =>
+              ("$" + Number(item?.[e]).toFixed(2)).includes(str)
+            );
+            const othersMatched = String(item?.[key])
+              ?.toLowerCase()
+              ?.includes(str?.toLowerCase());
+
+            return amountMatched || othersMatched;
+          })
         ),
       }));
     }
   };
+
+  const dollarFields = ["unit_price"];
 
   const initialState = {
     station_id,
@@ -87,7 +95,7 @@ const Ports = () => {
     search: {
       type: "text",
       onChange: search,
-      placeholder: "Search by ID, Port or Slots",
+      placeholder: "Search by ID, Name, Type, Price...",
     },
     pagination: {
       paginatedData,
@@ -125,9 +133,10 @@ const Ports = () => {
     },
     tableProps: {
       checkboxEnabled: false,
+      dollarFields,
     },
     headerStyles:
-      "min-[490px]:flex-row min-[490px]:space-y-0 min-[490px]:space-x-2  max-[490px]:flex-col max-[490px]:space-y-2 max-[490px]:space-x-0 max-[840px]:flex-col max-[840px]:space-y-2 max-[840px]:space-x-0 !items-baseline",
+      "min-[490px]:flex-row min-[490px]:space-y-0 min-[490px]:space-x-2 max-[490px]:flex-col max-[490px]:space-y-2 max-[490px]:space-x-0 max-[840px]:flex-col max-[840px]:space-y-2 max-[840px]:space-x-0 !items-baseline",
   };
 
   useEffect(() => {
@@ -135,10 +144,7 @@ const Ports = () => {
     formdata.append("station_id", station_id);
 
     const myHeaders = new Headers();
-    myHeaders.append(
-      "Authorization",
-      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTg4MTAyMjFkYWU3N2Nk"
-    );
+    myHeaders.append("Authorization", `Bearer ${token}`);
 
     const requestOptions = {
       method: "POST",

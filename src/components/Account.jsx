@@ -69,7 +69,7 @@ const Account = ({ toggle, setSingleToggle }) => {
         )}
         <p className="flex flex-col text-xs font-medium capitalize whitespace-nowrap">
           {user?.name}
-          <span className="text-[10px] font-normal capitalize">{user?.role}</span>
+          <span className="text-[10px] font-normal">Admin</span>
         </p>
         <FaChevronDown className={`text-sm ${toggle ? "rotate-180" : ""}`} />
       </div>
@@ -85,7 +85,7 @@ const Account = ({ toggle, setSingleToggle }) => {
                   : indx === 0
                   ? "mb-0"
                   : "my-0"
-              } rounded-md p-2 py-1.5 cursor-pointer text-gray-800 hover:bg-primary-300/40 hover:text-black`}
+              } rounded-md p-2 cursor-pointer text-gray-800 hover:bg-primary-200/40 hover:text-black`}
             >
               {elem.icon}
               <span className="ml-2 whitespace-nowrap">{elem.title}</span>

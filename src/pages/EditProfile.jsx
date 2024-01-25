@@ -1,78 +1,93 @@
-import React, { useContext, useState } from "react";
-import { Button, Page, TextArea } from "../components";
+import React, { useCallback, useContext, useState } from "react";
+import { Button, Page } from "../components";
+import { base_url, image_base_url, token } from "../utils/url";
 import { AppContext } from "../context";
-import { base_url } from "../utils/url";
-import { getInputType } from "../utils";
 import toast from "react-hot-toast";
+
+const editProfileUrl = `${base_url}/admin/edit_profile`;
 
 const EditProfile = () => {
   const { user, setUser } = useContext(AppContext);
-  //* console.log("user", user);
   const [state, setState] = useState(user);
-  const [toggleBtn, setToggleBtn] = useState(false);
+  const [image, setImage] = useState(user.profile_image);
+  const [loading, setLoading] = useState(false);
 
   const keys = Object.keys(state).filter(
-    (e) =>
-      e !== "id" &&
-      e !== "updated_at" &&
-      e !== "created_at" &&
-      e !== "password" &&
-      e !== "role" &&
-      e !== "status" &&
-      e !== "sin_number" &&
-      e !== "package" &&
-      e !== "company_id" &&
-      e !== "salary" &&
-      e !== "privilage"
+    (e) => e !== "__v" && e !== "password" && e !== "created_at"
+  );
+
+  const login = useCallback(
+    async (email, password) => {
+      try {
+        const myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${token}`);
+
+        const formdata = new FormData();
+        formdata.append("email", email);
+        formdata.append("password", password);
+
+        const requestOptions = {
+          headers: myHeaders,
+          method: "POST",
+          body: formdata,
+          redirect: "follow",
+        };
+
+        const res = await fetch(`${base_url}/admin/login`, requestOptions);
+        const json = await res.json();
+        console.log("json", json);
+
+        if (json.status) {
+          const data = json.data;
+          console.log("user", data);
+
+          setUser(data);
+          localStorage.setItem("user", JSON.stringify(data));
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    [setUser]
   );
 
   console.log("user ==>", user);
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setToggleBtn(true);
+    setLoading(true);
 
     try {
-      const url = `${base_url}/edit-company/${user.id}`;
-      let formdata = new FormData();
-      formdata.append(
-        "type",
-        user.role === "1" ? "Company" : "Project Manager"
-      );
-      console.log("type", user.role === "1" ? "Company" : "Project Manager");
-      Object.keys(state)
-        .filter((e) => e !== "role")
-        .forEach((key) => {
-          formdata.append(key, state[key]);
-          console.log(key, state[key]);
-        });
+      const headers = new Headers();
+      headers.append("Authorization", `Bearer ${token}`);
 
-      let requestOptions = {
-        headers: {
-          Accept: "application/json",
-        },
+      const formdata = new FormData();
+      keys.forEach((key) => {
+        formdata.append(key, state[key]);
+        console.log(key, state[key]);
+      });
+
+      const requestOptions = {
+        headers,
         method: "POST",
-        body: formdata,
         redirect: "follow",
+        body: formdata,
       };
 
-      const res = await fetch(url, requestOptions);
+      const res = await fetch(editProfileUrl, requestOptions);
       const json = await res.json();
 
       console.log("json", json);
-      if (json.success) {
-        let data = json.success.data;
-
-        setUser(data);
-        localStorage.setItem("user", JSON.stringify(data));
-        console.log("Response =============>", data);
+      if (json.status) {
         toast.success("Profile updated successfully!");
+        await login(user.email, user.password);
+
       } else {
         toast.error(json?.message || json?.error?.message);
       }
     } catch (err) {
       console.error(err);
     } finally {
-      setToggleBtn(false);
+      setLoading(false);
     }
   };
 
@@ -80,24 +95,21 @@ const EditProfile = () => {
     const key = e.target.name;
     const value = e.target.value;
 
-    setState({ ...state, [key]: value });
-    // if (key === "profile_image") {
-    //   const file = e.target.files[0];
+    if (key === "profile_image") {
+      const file = e.target.files[0];
 
-    //   setImage(URL.createObjectURL(file));
-    //   setState({ ...state, profile_image: file });
-    // } else {
-    // }
+      setImage(URL.createObjectURL(file));
+      setState({ ...state, profile_image: file });
+    } else {
+      setState({ ...state, [key]: value });
+    }
   };
 
   return (
     <Page title="Edit Profile" enableHeader>
-      <main className="max-w-2xl pb-10 mx-2 mt-10 sm:mx-auto">
-        <form
-          onSubmit={handleSubmit}
-          className="grid grid-cols-1 gap-6 sm:grid-cols-2"
-        >
-          {/* <div className="col-span-2">
+      <main className="max-w-md pb-10 mx-2 mt-10 sm:mx-auto">
+        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
+          <div className="col-span-2">
             <label className="block text-sm font-medium text-center text-gray-700">
               Photo
             </label>
@@ -135,64 +147,57 @@ const EditProfile = () => {
                 Change
               </button>
             </div>
-          </div> */}
+          </div>
 
-          {keys.map((key) =>
-            key.includes("address") ? (
-              <TextArea
-                {...{
-                  elem: key,
-                  state: state[key],
-                  setState: (val) => setState({ ...state, [key]: val }),
-                }}
+          {/* {keys.map(
+            (key) =>
+              key !== "_id" && (
+                )
+            )} */}
+          <div className="col-span-2">
+            <label
+              htmlFor="name"
+              className="block text-xs font-medium text-gray-700 capitalize"
+            >
+              Name
+            </label>
+            <div className="mt-1">
+              <input
+                type="text"
+                name="name"
+                id="name"
+                value={state.name}
+                onChange={handleChange}
+                className="p-2.5 w-full text-xs shadow-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
               />
-            ) : (
-              <div className="col-span-2 sm:col-span-1">
-                <label
-                  htmlFor={key}
-                  className="block text-xs font-medium text-gray-700 capitalize"
-                >
-                  {key.replaceAll("_", " ")}
-                </label>
-                <div className="mt-1">
-                  <input
-                    type={getInputType(key)}
-                    name={key}
-                    id={key}
-                    value={state[key]}
-                    onChange={handleChange}
-                    className="p-2.5 w-full text-xs shadow-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-              </div>
-            )
-          )}
-          {/* <div className="col-span-2">
+            </div>
+          </div>
+
+          <div className="col-span-2">
             <label
               htmlFor="email"
-              className="block text-xs font-medium text-gray-700"
+              className="block text-xs font-medium text-gray-700 capitalize"
             >
               Email
             </label>
             <div className="mt-1">
               <input
-                type="tel"
+                type="text"
                 name="email"
                 id="email"
                 value={state.email}
                 onChange={handleChange}
                 className="p-2.5 w-full text-xs shadow-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="+021 656 4848 315"
               />
             </div>
-          </div> */}
+          </div>
 
           <div className="col-span-2 text-right">
             <Button
               type="submit"
-              isLoading={toggleBtn}
-              title={toggleBtn ? "Updating" : "Update"}
-              extraStyles={toggleBtn ? "!py-2 !w-full" : "!py-3 !w-full"}
+              isLoading={loading}
+              title={loading ? "Updating" : "Update"}
+              extraStyles={loading ? "!py-2 !w-full" : "!py-3 !w-full"}
             />
           </div>
         </form>

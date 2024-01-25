@@ -67,7 +67,7 @@ const GeneralPage = ({
 
   const styles = {
     main: `relative ${
-      isLoading ? "flex justify-center items-center h-[70vh]" : ""
+      isLoading ? "flex justify-center items-center h-[70vh]" : "!pb-4"
     }`,
   };
 
@@ -90,7 +90,7 @@ const GeneralPage = ({
               </div>
               <input
                 id="table-search"
-                className="block w-full p-2 pl-10 text-xs text-gray-900 border border-gray-400 rounded-lg md:w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full min-w-[250px] md:min-w-fit p-2 pl-10 text-xs text-gray-900 border border-gray-400 rounded-lg md:w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
                 {...search}
               />
             </div>
@@ -98,12 +98,18 @@ const GeneralPage = ({
         )}
         {/* Search bar end */}
 
-        <div className="flex items-center space-x-1.5">
-          {headerButtons}
+        <div className="max-[489px]:w-full flex items-center justify-between space-x-1.5">
+          <p className="hidden max-[489px]:flex items-center justify-between mt-3 mb-2 text-xs">
+            {pagination.curLength} results
+          </p>
 
-          {createModalProps.initialState && (
-            <Button title="Create" handleClick={handleClick} />
-          )}
+          <div className="flex items-center">
+            {headerButtons}
+
+            {createModalProps.initialState && (
+              <Button title="Create" handleClick={handleClick} />
+            )}
+          </div>
 
           {dropdowns && (
             <div className="flex items-center space-x-1">
@@ -114,6 +120,10 @@ const GeneralPage = ({
           )}
         </div>
       </div>
+
+      <p className="items-center justify-between hidden mt-3 mb-2 text-xs min-[490px]:flex">
+        {pagination.curLength} results
+      </p>
 
       <Pagination {...pagination} />
 

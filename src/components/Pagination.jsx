@@ -43,11 +43,11 @@ function Pagination({ paginatedData, setPaginatedData }) {
   };
 
   const handleSelect = (e) => {
-    const value = Number(e.target.value);
+    const value = e.target.value;
 
     value === "All"
       ? setItemsPerPageState(paginatedData.items.length)
-      : setItemsPerPageState(value);
+      : setItemsPerPageState(Number(value));
   };
 
   return (

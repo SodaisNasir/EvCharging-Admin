@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { AiFillEye, AiFillFolderOpen } from "react-icons/ai";
 import { FaFileVideo, FaFileImage } from "react-icons/fa6";
-import { FaMegaport } from "react-icons/fa";
+import { FaCalendarCheck, FaMegaport } from "react-icons/fa";
 import { CgUnblock } from "react-icons/cg";
 import {
   MdBlock,
   MdDelete,
+  MdFreeCancellation,
   MdModeEdit,
   MdNotificationAdd,
+  MdReviews,
 } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { token } from "../utils/url";
 
 const Actions = ({
   id,
@@ -26,6 +29,7 @@ const Actions = ({
   setNotificationModal,
   blockUrl,
   deleteUrl,
+  cancelUrl,
 }) => {
   const navigate = useNavigate();
   const [blockUser, setBlockUser] = useState(
@@ -62,7 +66,7 @@ const Actions = ({
           ...prev,
           items: prev.items.filter((e) => e._id !== data._id),
         }));
-        toast.status(json.message);
+        toast.success(json.message);
       } else if (!json.status) {
         toast.error(json.message);
       }
@@ -87,33 +91,22 @@ const Actions = ({
       console.log("res status =======>", res.status);
 
       if (res.status === 200) {
+        const mapCallback = (item) =>
+          item.id == id
+            ? {
+                ...item,
+                status:
+                  item.status.toLowerCase() === "active"
+                    ? "INACTIVE"
+                    : "ACTIVE",
+              }
+            : item;
+
         setBlockUser(!blockUser);
-        setData((prev) =>
-          prev.map((item) =>
-            item.id == id
-              ? {
-                  ...item,
-                  status:
-                    item.status.toLowerCase() === "active"
-                      ? "INACTIVE"
-                      : "ACTIVE",
-                }
-              : item
-          )
-        );
+        setData((prev) => prev.map(mapCallback));
         setPaginatedData((prev) => ({
           ...prev,
-          items: prev.items.map((item) =>
-            item.id == id
-              ? {
-                  ...item,
-                  status:
-                    item.status.toLowerCase() === "active"
-                      ? "INACTIVE"
-                      : "ACTIVE",
-                }
-              : item
-          ),
+          items: prev.items.map(mapCallback),
         }));
       }
     } catch (err) {
@@ -121,14 +114,78 @@ const Actions = ({
     }
   };
 
+  const cancelBooking = async () => {
+    try {
+      const formdata = new FormData();
+      formdata.append("_id", data._id);
+      console.log("_id", data._id);
+      const headers = new Headers();
+      headers.append("Authorization", `Bearer ${token}`);
+
+      const requestOptions = {
+        headers,
+        method: "POST",
+        redirect: "follow",
+        body: formdata,
+      };
+      const res = await fetch(cancelUrl, requestOptions);
+      const json = await res.json();
+      console.log("json", json);
+
+      if (json.status) {
+        toast.success(json.message);
+      } else if (!json.status) {
+        toast.error(json.message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const checkAction = (name) => {
     let element;
 
-    if (name === "Ports") {
+    if (name === "Cancel Booking") {
+      const isCancelled = data.status === "cancel";
       element = (
         <td className="self-center px-6 py-2 pt-4 text-lg text-center">
           <button
-            onClick={() => navigate("/ports/" + data._id)}
+            onClick={cancelBooking}
+            className="font-medium text-gray-700 hover:text-gray-800 disabled:cursor-not-allowed disabled:hover:text-gray-500 disabled:text-gray-500"
+            disabled={isCancelled}
+            title={isCancelled ? "Already Cancelled" : "Cancel Booking"}
+          >
+            <MdFreeCancellation />
+          </button>
+        </td>
+      );
+    } else if (name === "Bookings") {
+      element = (
+        <td className="self-center px-6 py-2 pt-4 text-lg text-center">
+          <button
+            onClick={() => navigate(`/stations/${data._id}/bookings`)}
+            className="font-medium text-gray-600 hover:text-gray-800"
+          >
+            <FaCalendarCheck />
+          </button>
+        </td>
+      );
+    } else if (name === "Reviews") {
+      element = (
+        <td className="self-center px-6 py-2 pt-4 text-lg text-center">
+          <button
+            onClick={() => navigate(`/stations/${data._id}/reviews`)}
+            className="font-medium text-gray-600 hover:text-gray-800"
+          >
+            <MdReviews />
+          </button>
+        </td>
+      );
+    } else if (name === "Ports") {
+      element = (
+        <td className="self-center px-6 py-2 pt-4 text-lg text-center">
+          <button
+            onClick={() => navigate(`/stations/${data._id}/ports`)}
             className="font-medium text-gray-600 hover:text-gray-800"
           >
             <FaMegaport />

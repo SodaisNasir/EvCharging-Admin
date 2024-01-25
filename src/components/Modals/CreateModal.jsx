@@ -105,7 +105,7 @@ const CreateModal = ({
     header: "flex justify-between items-center py-3 px-4 border-b",
     main: {
       base: "p-4 overflow-y-auto max-h-[70vh]",
-      grid: `grid grid-cols-${gridCols} gap-4`,
+      grid: `grid grid-cols-2 gap-4`,
       get() {
         return `${this.base} ${this.grid}`;
       },

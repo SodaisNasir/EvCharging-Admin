@@ -1,5 +1,5 @@
 import GeneralPage from "../GeneralPage";
-import { base_url } from "../../utils/url";
+import { base_url, token } from "../../utils/url";
 import { useState, useEffect, useContext } from "react";
 import { convertPropsToObject, fetchData, modifyData } from "../../utils";
 import { AppContext } from "../../context";
@@ -7,7 +7,6 @@ import toast from "react-hot-toast";
 
 const neededProps = [
   { from: "_id", to: "_id" },
-  // {from: "serial_no", to: "id"},
   "serial_no",
   "station_image",
   "station_name",
@@ -52,13 +51,6 @@ const Stations = () => {
     }
   };
 
-  // const initialState = {
-  //   station_name: "",
-  //   latitude: "",
-  //   longitude: "",
-  //   location: "",
-  // };
-
   const uploadFields = [
     {
       key: "station_image",
@@ -68,7 +60,14 @@ const Stations = () => {
 
   const props = {
     title: "Stations",
-    actionCols: ["Ports", "View", "Edit", "Delete"],
+    actionCols: [
+      "Bookings",
+      // "Reviews",
+      "Ports",
+      "View",
+      "Edit",
+      "Delete",
+    ],
     data,
     setData,
     template,
@@ -87,7 +86,6 @@ const Stations = () => {
     createModalProps: {
       neededProps,
       initialState: template,
-      // textAreaFields: ["location"],
       createUrl,
       uploadFields,
       hideFields: ["location"],
@@ -104,7 +102,6 @@ const Stations = () => {
       neededProps,
       uploadFields,
       hideFields: ["location", "_id"],
-      // textAreaFields: ["location"],
       excludeFields: ["serial_no", "created_at", "updated_at"],
       successCallback: (json) => {
         const updatedData = modifyData(json.data, neededProps, true);
@@ -135,19 +132,12 @@ const Stations = () => {
   };
 
   useEffect(() => {
-    // const formdata = new FormData();
     const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "multipart/form-data");
-    myHeaders.append("Accept", "multipart/form-data");
-    myHeaders.append(
-      "Authorization",
-      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTg4MTAyMjFkYWU3N2Nk"
-    );
+    myHeaders.append("Authorization", `Bearer ${token}`);
 
     const requestOptions = {
       method: "GET",
       headers: myHeaders,
-      // body: formdata,
       redirect: "follow",
     };
 
@@ -156,7 +146,6 @@ const Stations = () => {
       setIsLoading,
       requestOptions,
       url: showAllStations,
-      // sort: (data) => data?.sort((a, b) => b.id - a.id),
       callback: (data) => {
         const newData = data.map((e) => {
           const _latitude = e._location.coordinates[0];

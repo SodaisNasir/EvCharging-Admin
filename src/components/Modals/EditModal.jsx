@@ -101,7 +101,7 @@ const EditModal = ({
     header: "flex justify-between items-center py-3 px-4 border-b",
     main: {
       base: "p-4 overflow-y-auto max-h-[70vh]",
-      grid: `grid grid-cols-${gridCols} gap-4`,
+      grid: `grid grid-cols-2 gap-4`,
       get() {
         return `${this.base} ${this.grid}`;
       },
@@ -195,7 +195,7 @@ const EditModal = ({
                 : {};
 
               return (
-                <div key={elem} className="col-span-1">
+                <div key={elem} className={gridCols === 2 ? "col-span-2 sm:col-span-1" : "col-span-1"}>
                   <label
                     htmlFor={elem}
                     className="block mb-1 text-xs font-medium capitalize"

@@ -1,22 +1,24 @@
 import React from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { base_url, token } from "../../utils/url";
 import { useContext } from "react";
 import { AppContext } from "../../context";
 import { Button, Page } from "../../components";
+import { homeRoute } from "../../constants/data";
 import toast from "react-hot-toast";
 
 const Login = () => {
-  const { user, setUser } = useContext(AppContext);
   const navigate = useNavigate();
+  const { user, setUser } = useContext(AppContext);
+
   const [email, setEmail] = useState("");
   const [toggleBtn, setToggleBtn] = useState(false);
   const [password, setPassword] = useState({ isVisible: false, value: "" });
 
   if (user) {
-    return <Navigate to="/stations" replace />;
+    return <Navigate to={homeRoute} replace />;
   }
 
   const handleChange = (e) => {
@@ -41,28 +43,11 @@ const Login = () => {
 
     try {
       const myHeaders = new Headers();
-      // myHeaders.append("Content-Type", "multipart/form-data");
-      // myHeaders.append("Accept", "multipart/form-data");
-      myHeaders.append(
-        "Authorization",
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTg4MTAyMjFkYWU3N2Nk"
-      );
+      myHeaders.append("Authorization", `Bearer ${token}`);
 
       const formdata = new FormData();
       formdata.append("email", email);
       formdata.append("password", password.value);
-      // const data = {
-      //   id: 1,
-      //   first_name: "Mateen",
-      //   last_name: "Ahmed",
-      //   role: "Admin",
-      //   email,
-      //   password: password.value,
-      //   phone: "0987654321",
-      //   image: "image",
-      // };
-      // localStorage.setItem("user", JSON.stringify(data));
-      // setUser(data);
 
       const res = await fetch(`${base_url}/admin/login`, {
         method: "POST",
@@ -81,7 +66,7 @@ const Login = () => {
         setUser(data);
 
         setTimeout(() => {
-          navigate("/stations");
+          navigate(homeRoute);
         }, 2000);
       } else {
         toast.error(json.message, { duration: 2000 });
@@ -144,12 +129,9 @@ const Login = () => {
                 </div>
               </div>
               <div className="w-full text-right text-[11px] font-medium mb-3 mt-2">
-                <Link
-                  to="/forgot-password"
-                  className="hover:text-primary-400 hover:underline"
-                >
+                <span className="hover:text-primary-400 hover:underline">
                   Forgot Password?
-                </Link>
+                </span>
               </div>
               <Button
                 isLoading={toggleBtn}
