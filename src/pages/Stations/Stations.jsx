@@ -60,14 +60,7 @@ const Stations = () => {
 
   const props = {
     title: "Stations",
-    actionCols: [
-      "Bookings",
-      // "Reviews",
-      "Ports",
-      "View",
-      "Edit",
-      "Delete",
-    ],
+    actionCols: ["Bookings", "Reviews", "Ports", "View", "Edit", "Delete"],
     data,
     setData,
     template,

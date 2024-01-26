@@ -38,6 +38,14 @@ export const convertPropsToObject = (neededProps) =>
     )
   );
 
+export const replaceParaWithDivs = (htmlString) =>
+  htmlString
+    .replace(/<p(.*?)>/gi, (m) =>
+      m.includes("class") ? m.replace("p", "div") : "<div>"
+    )
+    .replace(/<\/p>/gi, "</div>");
+// .replace(/class="ql-align-center"/g, 'style="text-align: center;"');
+
 export const parseJson = (value) => {
   let copy = typeof value === "string" ? JSON.parse(value) : value;
   return typeof copy === "string" ? JSON.parse(copy) : copy;

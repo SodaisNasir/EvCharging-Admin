@@ -1,9 +1,11 @@
-import EditProfile from "./EditProfile";
-import ChangePassword from "./ChangePassword";
-import EmailVerification from "./EmailVerification";
-import ForgotPassword from "./ForgotPassword";
+import TermsAndConditions from "./Settings/TermsAndConditions";
+import FAQs from "./Settings/FAQs";
+import CountryCodes from "./Settings/CountryCodes";
+import Vehicles from "./Vehicles";
+import Users from "./Users";
+export * from "./Settings";
 export * from "./Stations";
-export * from "./Users";
+export * from "./User";
 export * from "./Auth";
 
-export { ChangePassword, EditProfile, EmailVerification, ForgotPassword };
+export { Users, Vehicles, CountryCodes, TermsAndConditions, FAQs };

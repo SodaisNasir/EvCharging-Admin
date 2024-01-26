@@ -1,11 +1,19 @@
 import React from "react";
 import { GiSandsOfTime } from "react-icons/gi";
-import { FaChargingStation, FaCheck, FaClipboardList, FaFileInvoiceDollar, FaUsers } from "react-icons/fa";
-import { IoIosNotifications, IoMdBriefcase } from "react-icons/io";
+import {
+  FaCar,
+  FaChargingStation,
+  FaCheck,
+  FaClipboardList,
+  FaFileInvoiceDollar,
+  FaUsers,
+} from "react-icons/fa";
+import { IoIosNotifications, IoMdBriefcase, IoMdSettings } from "react-icons/io";
 import { FaPersonDigging } from "react-icons/fa6";
 import { BsPersonBadgeFill } from "react-icons/bs";
 import { MdCoPresent, MdOutlinePlaylistAddCheck } from "react-icons/md";
 import { RxLapTimer } from "react-icons/rx";
+import { BiWorld } from "react-icons/bi";
 
 // Home route
 export const homeRoute = "/users";
@@ -23,6 +31,36 @@ export const navLinks = [
     icon: <FaChargingStation className="-ml-0.5 text-xl" />,
     path: "/stations",
     title: "stations",
+  },
+  {
+    id: 3,
+    icon: <FaCar className="-ml-0.5 text-xl" />,
+    path: "/vehicles",
+    title: "vehicles",
+  },
+  {
+    id: 4,
+    path: "/settings",
+    title: "settings",
+    icon: <IoMdSettings className="-ml-0.5 text-xl" />,
+    items: [
+      {
+        path: "/settings/country-codes",
+        title: "country_codes",
+      },
+      {
+        path: "/settings/terms-and-conditions",
+        title: "terms_and_conditions",
+      },
+      {
+        path: "/settings/privacy-policy",
+        title: "privacy_policy",
+      },
+      {
+        path: "/settings/faqs",
+        title: "FAQs",
+      },
+    ],
   },
 ];
 

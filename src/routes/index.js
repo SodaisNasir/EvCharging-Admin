@@ -15,8 +15,14 @@ import {
   Ports,
   Users,
   Reviews,
+  Vehicles,
+  CountriesCodes,
+  TermsAndConditions,
+  FAQs,
+  PrivacyPolicy,
 } from "../pages";
 import { base_url } from "../utils/url";
+import CountryCodes from "../pages/Settings/CountryCodes";
 
 // Router component handles the routing of the application
 const Router = () => {
@@ -98,10 +104,10 @@ const Router = () => {
           >
             <Route path="/stations">
               <Route index element={accessPrivateRoutes(Stations)} />
-              {/* <Route
+              <Route
                 path="/stations/:station_id/reviews"
                 element={accessPrivateRoutes(Reviews)}
-              /> */}
+              />
               <Route
                 path="/stations/:station_id/ports"
                 element={accessPrivateRoutes(Ports)}
@@ -112,6 +118,26 @@ const Router = () => {
               />
             </Route>
             <Route path="/users" element={accessPrivateRoutes(Users)} />
+            <Route path="/vehicles" element={accessPrivateRoutes(Vehicles)} />
+
+            <Route path="/settings">
+              <Route
+                path="/settings/country-codes"
+                element={accessPrivateRoutes(CountryCodes)}
+              />
+              <Route
+                path="/settings/terms-and-conditions"
+                element={accessPrivateRoutes(TermsAndConditions)}
+              />
+              <Route
+                path="/settings/faqs"
+                element={accessPrivateRoutes(FAQs)}
+              />
+              <Route
+                path="/settings/privacy-policy"
+                element={accessPrivateRoutes(PrivacyPolicy)}
+              />
+            </Route>
             <Route
               path="/edit-profile"
               element={accessPrivateRoutes(EditProfile)}

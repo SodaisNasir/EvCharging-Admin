@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { navLinks } from "../constants/data";
 import { VscClose } from "react-icons/vsc";
 
@@ -10,7 +10,7 @@ const Navbar = ({ toggle, setToggle }) => {
         id="navbar"
         className={`flex flex-col justify-between h-screen overflow-y-auto absolute md:static top-0 left-0 border-r bg-white ${
           toggle ? "" : "-translate-x-full md:-translate-x-0"
-        } max-md:transition-all max-md:duration-300 w-full max-w-[220px] px-5 pb-7 md:py-8 z-[3]`}
+        } max-md:transition-all max-md:duration-300 w-full max-w-[230px] px-5 pb-7 md:py-8 z-[3]`}
       >
         <div>
           {/* close btn (inside navbar) */}
@@ -44,6 +44,7 @@ const Navbar = ({ toggle, setToggle }) => {
 };
 
 const NavItem = ({ data }) => {
+  const location = useLocation();
   const [toggle, setToggle] = useState(false);
 
   // if Nav item is a link
@@ -70,7 +71,11 @@ const NavItem = ({ data }) => {
   return (
     <>
       <div
-        className="flex items-center my-4 mb-2 cursor-pointer text-[#091A35] hover:text-primary-500"
+        className={`flex items-center my-4 mb-2 cursor-pointer hover:text-primary-500 ${
+          location.pathname.includes(data.path)
+            ? "!text-primary-500 !font-semibold"
+            : "text-[#091A35]"
+        }`}
         onClick={() => setToggle(!toggle)}
       >
         {/* <img className="w-4" src={data.icon} alt="icon" /> */}
@@ -91,7 +96,7 @@ const NavItem = ({ data }) => {
               className={({ isActive }) => {
                 return `${
                   isActive ? "font-semibold" : "font-normal"
-                } group flex items-center max-w-fit transition-all duration-300 hover:font-semibold text-[#909090] z-10`;
+                } group flex items-center max-w-fit transition-all duration-300 hover:font-semibold text-[#909090] z-10 capitalize`;
               }}
             >
               <div
@@ -101,7 +106,7 @@ const NavItem = ({ data }) => {
                     : "bg-[#D9D9D9]"
                 } group-hover:bg-[#909090] group-hover:scale-125 rounded-full transition-all duration-300 w-2 h-2 mr-2 my-2`}
               />
-              {title}
+              {title.replaceAll("_", " ")}
             </NavLink>
           );
         })}

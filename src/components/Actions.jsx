@@ -133,6 +133,19 @@ const Actions = ({
       console.log("json", json);
 
       if (json.status) {
+        const mapCallback = (e) =>
+          e._id === data._id
+            ? {
+                ...e,
+                status: "cancel",
+              }
+            : e;
+
+        setData((prev) => prev.map(mapCallback));
+        setPaginatedData((prev) => ({
+          ...prev,
+          items: prev.items.map(mapCallback),
+        }));
         toast.success(json.message);
       } else if (!json.status) {
         toast.error(json.message);

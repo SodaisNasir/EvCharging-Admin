@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import Actions from "../Actions";
-import { image_base_url, station_image_base_url } from "../../utils/url";
+import { country_image_base_url, image_base_url, ports_image_base_url, station_image_base_url } from "../../utils/url";
 
 const CommonTable = ({
   state,
@@ -26,6 +26,10 @@ const CommonTable = ({
   const imageBaseUrl = useMemo(() => {
     if (props.title === "Stations") {
       return station_image_base_url;
+    } else if (props.title === "Ports") {
+      return ports_image_base_url;
+    } else if (props.title === "Country Codes") {
+      return country_image_base_url;
     } else {
       return image_base_url;
     }

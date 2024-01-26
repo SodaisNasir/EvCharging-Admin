@@ -122,9 +122,9 @@ const Ports = () => {
       neededProps,
       uploadFields,
       appendableFields,
-      hideFields: [],
+      hideFields: ["_id"],
       textAreaFields: ["port_description"],
-      excludeFields: ["_id", "station_id", "created_at", "updated_at"],
+      excludeFields: ["station_id", "created_at", "updated_at"],
       successCallback: (json) => {
         setReload((prev) => !prev);
         toast.success(json.message);
