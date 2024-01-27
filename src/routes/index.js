@@ -29,7 +29,7 @@ const Router = () => {
   const { user, setUser } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(true);
 
-  const accessPrivateRoutes = (Page) => (user ? <Page /> : <AccessDenied />);
+  const privateRoutes = (Page) => (user ? <Page /> : <AccessDenied />);
   const accessPublicRoutes = (Page) =>
     user ? <Navigate to="/stations" /> : <Page />;
 
@@ -103,45 +103,39 @@ const Router = () => {
             element={user ? <Layout /> : <Navigate to="/login" replace />}
           >
             <Route path="/stations">
-              <Route index element={accessPrivateRoutes(Stations)} />
+              <Route index element={privateRoutes(Stations)} />
               <Route
                 path="/stations/:station_id/reviews"
-                element={accessPrivateRoutes(Reviews)}
+                element={privateRoutes(Reviews)}
               />
               <Route
                 path="/stations/:station_id/ports"
-                element={accessPrivateRoutes(Ports)}
+                element={privateRoutes(Ports)}
               />
               <Route
                 path="/stations/:station_id/bookings"
-                element={accessPrivateRoutes(Bookings)}
+                element={privateRoutes(Bookings)}
               />
             </Route>
-            <Route path="/users" element={accessPrivateRoutes(Users)} />
-            <Route path="/vehicles" element={accessPrivateRoutes(Vehicles)} />
+            <Route path="/users" element={privateRoutes(Users)} />
+            <Route path="/vehicles" element={privateRoutes(Vehicles)} />
 
-            <Route path="/settings">
+            <Route>
               <Route
                 path="/settings/country-codes"
-                element={accessPrivateRoutes(CountryCodes)}
+                element={privateRoutes(CountryCodes)}
               />
               <Route
                 path="/settings/terms-and-conditions"
-                element={accessPrivateRoutes(TermsAndConditions)}
+                element={privateRoutes(TermsAndConditions)}
               />
-              <Route
-                path="/settings/faqs"
-                element={accessPrivateRoutes(FAQs)}
-              />
+              <Route path="/settings/faqs" element={privateRoutes(FAQs)} />
               <Route
                 path="/settings/privacy-policy"
-                element={accessPrivateRoutes(PrivacyPolicy)}
+                element={privateRoutes(PrivacyPolicy)}
               />
             </Route>
-            <Route
-              path="/edit-profile"
-              element={accessPrivateRoutes(EditProfile)}
-            />
+            <Route path="/edit-profile" element={privateRoutes(EditProfile)} />
           </Route>
 
           <Route path="*" element={<Page404 />} />

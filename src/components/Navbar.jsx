@@ -48,7 +48,7 @@ const NavItem = ({ data }) => {
   const [toggle, setToggle] = useState(false);
 
   // if Nav item is a link
-  if (data.path) {
+  if (!data.items) {
     return (
       <NavLink
         to={data.path}
