@@ -9,7 +9,7 @@ const editProfileUrl = `${base_url}/admin/edit_profile`;
 const EditProfile = () => {
   const { user, setUser } = useContext(AppContext);
   const [state, setState] = useState(user);
-  const [image, setImage] = useState(user.profile_image);
+  const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const keys = Object.keys(state).filter(
