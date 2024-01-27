@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import Actions from "../Actions";
-import { country_image_base_url, image_base_url, ports_image_base_url, station_image_base_url } from "../../utils/url";
+import { country_image_base_url, image_base_url, ports_image_base_url, station_image_base_url, users_image_base_url } from "../../utils/url";
 
 const CommonTable = ({
   state,
@@ -24,14 +24,17 @@ const CommonTable = ({
     str.replace(/^.|_./g, (match) => match.toUpperCase()).replace(/_/g, " ");
 
   const imageBaseUrl = useMemo(() => {
-    if (props.title === "Stations") {
-      return station_image_base_url;
-    } else if (props.title === "Ports") {
-      return ports_image_base_url;
-    } else if (props.title === "Country Codes") {
-      return country_image_base_url;
-    } else {
-      return image_base_url;
+    switch (props.title) {
+      case "Stations":
+        return station_image_base_url;
+      case "Ports":
+        return ports_image_base_url;
+      case "Country Codes":
+        return country_image_base_url;
+      case "Users":
+        return users_image_base_url;
+      default:
+        return image_base_url;
     }
   }, [props.title]);
 

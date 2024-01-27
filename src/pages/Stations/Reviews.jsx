@@ -79,6 +79,7 @@ const Reviews = () => {
     };
 
     fetchData({
+      neededProps,
       setIsLoading,
       requestOptions,
       url: showAllReviews,

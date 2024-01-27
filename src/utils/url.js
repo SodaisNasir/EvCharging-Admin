@@ -1,6 +1,9 @@
 export const base_url =
   "http://evchargingv2-env.eba-pbhtgnvx.eu-north-1.elasticbeanstalk.com";
-export const image_base_url = "https://evchargingv2-env.eba-pbhtgnvx.eu-north-1.elasticbeanstalk.com/uploads/users/";
+export const image_base_url =
+  "http://evchargingv2-env.eba-pbhtgnvx.eu-north-1.elasticbeanstalk.com/uploads/users/";
+export const users_image_base_url =
+  "http://evchargingv2-env.eba-pbhtgnvx.eu-north-1.elasticbeanstalk.com/uploads/users/";
 export const station_image_base_url =
   "http://evchargingv2-env.eba-pbhtgnvx.eu-north-1.elasticbeanstalk.com/uploads/station_images/";
 export const ports_image_base_url =

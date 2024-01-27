@@ -43,7 +43,7 @@ const CountryCodes = () => {
               ?.toLowerCase()
               ?.includes(str?.toLowerCase());
 
-            return matched;
+            return !uploadFields.find(e => e.key === key) && matched;
           })
         ),
       }));
@@ -78,7 +78,7 @@ const CountryCodes = () => {
     search: {
       type: "text",
       onChange: search,
-      placeholder: "Search by ID, Name, Modal or Date",
+      placeholder: "Search by ID, Name, Short Name, Code...",
     },
     pagination: {
       paginatedData,
