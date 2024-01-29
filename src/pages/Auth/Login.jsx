@@ -1,7 +1,7 @@
 import React from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { base_url, token } from "../../utils/url";
 import { useContext } from "react";
 import { AppContext } from "../../context";
@@ -129,9 +129,9 @@ const Login = () => {
                 </div>
               </div>
               <div className="w-full text-right text-[11px] font-medium mb-3 mt-2">
-                <span className="hover:text-primary-400 hover:underline">
+                <Link to="/forgot-password" className="hover:text-primary-400 hover:underline">
                   Forgot Password?
-                </span>
+                </Link>
               </div>
               <Button
                 isLoading={toggleBtn}

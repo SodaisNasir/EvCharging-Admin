@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { Loader, Page } from "../../components";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import { base_url } from "../../utils/url";
+import { base_url, token } from "../../utils/url";
 import { useContext } from "react";
 import { AppContext } from "../../context";
 import toast from "react-hot-toast";
@@ -43,24 +43,28 @@ const ChangePassword = () => {
     setConfirmPassword((prev) => ({ ...prev, isVisible: !prev.isVisible }));
 
   const handleSubmit = async (e) => {
-    const url = `${base_url}/admin/change_password`;
+    const url = `${base_url}/admin/${
+      otpData?.OTP ? "forget_password" : "change_password"
+    }`;
     e.preventDefault();
-    
+
     if (newPassword.value !== confirmPassword.value) {
       toast.error("Passwords do not match!");
       return;
     }
-    
+
     setToggleBtn(true);
     try {
-      let formdata = new FormData();
-      formdata.append("password", newPassword.value);
-      formdata.append("user_id", user._id);
+      const headers = new Headers();
+      headers.append("Authorization", `Bearer ${token}`);
 
-      let requestOptions = {
-        headers: {
-          Accept: "application/json",
-        },
+      const formdata = new FormData();
+      otpData?.email && formdata.append("email", otpData?.email);
+      user && formdata.append("user_id", user?._id);
+      formdata.append("password", newPassword.value);
+
+      const requestOptions = {
+        headers,
         method: "POST",
         body: formdata,
         redirect: "follow",
@@ -97,7 +101,7 @@ const ChangePassword = () => {
     return () => {
       !user && document.addEventListener("beforeunload", handleBeforeUnload);
     };
-  }, []);
+  }, [user]);
 
   if (!user && !otpData) {
     return <Navigate to="/forgot-password" />;

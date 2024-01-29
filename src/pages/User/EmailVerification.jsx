@@ -3,7 +3,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { ConfirmationCodeFeilds, Loader, Page } from "../../components";
 import { useContext } from "react";
 import { AppContext } from "../../context";
-import { base_url } from "../../utils/url";
+import { base_url, token } from "../../utils/url";
 import toast from "react-hot-toast";
 
 const EmailVerification = () => {
@@ -26,40 +26,33 @@ const EmailVerification = () => {
     let json;
 
     try {
-      let formdata = new FormData();
-      formdata.append(
-        "type",
-        otpData?.role === "1" ? "Company" : "Project Manager"
-      );
+      const headers = new Headers();
+      headers.append("Authorization", `Bearer ${token}`);
+
+      const formdata = new FormData();
       formdata.append("email", otpData?.email);
 
-      let requestOptions = {
-        headers: {
-          Accept: "application/json",
-        },
+      const requestOptions = {
+        headers,
         method: "POST",
         body: formdata,
         redirect: "follow",
       };
 
-      const res = await fetch(
-        `${base_url}/company-forgot-password`,
-        requestOptions
-      );
+      const res = await fetch(`${base_url}/admin/verify_email`, requestOptions);
       json = await res.json();
+      console.log("json", json);
 
-      if (json.success) {
-        const data = json.success;
-        setOtpData(data);
-
-        console.log("data", data);
+      if (json.status) {
+        const data = json.data;
+        setOtpData({ email: otpData.email, ...data });
 
         navigate("/email-verification");
       } else {
         toast.error(
-          json?.error?.message.toLowerCase().includes("not found")
+          json?.message.toLowerCase().includes("not found")
             ? "Email not found!"
-            : json?.error?.message,
+            : json?.message,
           { duration: 1500 }
         );
       }
@@ -73,8 +66,6 @@ const EmailVerification = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setToggleBtn(true);
-
-    // * console.log("state", state);
 
     if (otpData.OTP == state) {
       toast.success("Email verification completed!", { duration: 2000 });
@@ -140,7 +131,7 @@ const EmailVerification = () => {
             {counter === 0 && (
               <button
                 onClick={handleResend}
-                className="block mx-auto text-[11px] mt-2 text-blue-500 hover:underline font-medium text-center"
+                className="block mx-auto text-[11px] mt-2 text-primary-500 hover:underline font-medium text-center"
               >
                 Resend
               </button>
@@ -149,13 +140,13 @@ const EmailVerification = () => {
             <button
               type="submit"
               id="continue"
-              className="flex items-center justify-center w-full px-5 py-3 mt-3.5 text-xs font-medium text-center text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 disabled:bg-blue-300 disabled:saturate-30 disabled:py-1 disabled:cursor-not-allowed"
+              className="flex items-center justify-center w-full px-5 py-3 mt-3.5 text-xs font-medium text-center text-white bg-primary-500 rounded-lg hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-100 disabled:bg-primary-300 disabled:saturate-30 disabled:py-1 disabled:cursor-not-allowed"
               disabled={toggleBtn}
             >
               {toggleBtn && (
                 <Loader
                   extraStyles="!static !inset-auto !block !scale-50 !bg-transparent !saturate-100"
-                  loaderColor={toggleBtn ? "fill-blue-300" : ""}
+                  loaderColor={toggleBtn ? "fill-primary-300" : ""}
                 />
               )}
               Continue

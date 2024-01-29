@@ -9,11 +9,16 @@ export const ContextProvider = ({ children }) => {
   console.log(user);
 
   useEffect(() => {
+    let timeoutId;
     if (otpData) {
-      setTimeout(() => {
+      timeoutId = setTimeout(() => {
         setOtpData(null);
       }, 100000);
     }
+
+    return () => {
+      timeoutId && clearTimeout(timeoutId);
+    };
   }, [otpData]);
 
   return (

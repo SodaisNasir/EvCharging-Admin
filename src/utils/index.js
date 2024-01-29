@@ -1,3 +1,4 @@
+export * from "./time";
 export const getInputType = (key) => {
   const str = key.toLowerCase();
 

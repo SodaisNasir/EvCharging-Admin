@@ -141,14 +141,14 @@ const Router = () => {
           <Route path="*" element={<Page404 />} />
           <Route index path="/login" element={<Login />} />
           <Route path="/change-password" element={<ChangePassword />} />
-          {/* <Route
+          <Route
             path="/forgot-password"
             element={accessPublicRoutes(ForgotPassword)}
           />
           <Route
             path="/email-verification"
             element={accessPublicRoutes(EmailVerification)}
-          /> */}
+          />
         </Routes>
       </BrowserRouter>
     </>

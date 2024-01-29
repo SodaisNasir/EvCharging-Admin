@@ -1,10 +1,10 @@
 import React from "react";
 import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Loader, Page } from "../../components";
 import { useContext } from "react";
 import { AppContext } from "../../context";
-import { base_url } from "../../utils/url";
+import { base_url, token } from "../../utils/url";
 import toast from "react-hot-toast";
 
 const ForgotPassword = () => {
@@ -12,8 +12,6 @@ const ForgotPassword = () => {
   const { setOtpData } = useContext(AppContext);
   const [email, setEmail] = useState("");
   const [toggleBtn, setToggleBtn] = useState(false);
-  const [params] = useSearchParams();
-  const isCompany = params.get("isCompany") === "true";
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -27,37 +25,35 @@ const ForgotPassword = () => {
     let json = null;
 
     try {
-      let formdata = new FormData();
-      formdata.append("type", isCompany ? "Company" : "Project Manager");
+      const headers = new Headers();
+      headers.append("Authorization", `Bearer ${token}`);
+
+      const formdata = new FormData();
       formdata.append("email", email);
 
       let requestOptions = {
-        headers: {
-          Accept: "application/json",
-        },
+        headers,
         method: "POST",
         body: formdata,
         redirect: "follow",
       };
 
-      const res = await fetch(
-        `${base_url}/company-forgot-password`,
-        requestOptions
-      );
+      const res = await fetch(`${base_url}/admin/verify_email`, requestOptions);
       json = await res.json();
+      console.log("json", json);
 
-      if (json.success) {
-        const data = json.success;
-        setOtpData(data);
+      if (json.status) {
+        const data = json.data;
+        setOtpData({ email, ...data });
 
         console.log("data", data);
 
         navigate("/email-verification");
       } else {
         toast.error(
-          json?.error?.message.toLowerCase().includes("not found")
+          json?.message.toLowerCase().includes("not found")
             ? "Email not found!"
-            : json?.error?.message,
+            : json?.message,
           { duration: 1500 }
         );
       }
@@ -75,8 +71,8 @@ const ForgotPassword = () => {
           <h2 className="mb-2 text-lg font-semibold">Reset Password</h2>
 
           <p className="mb-3 text-xs">
-            Please enter your {isCompany ? "company" : "PM account"} email
-            address, and we will send you an OTP to confirm it.
+            Please enter your email address, and we will send you an OTP to
+            confirm it.
           </p>
 
           <form onSubmit={handleSubmit} method="POST">
@@ -92,20 +88,20 @@ const ForgotPassword = () => {
               id="email"
               onChange={handleChange}
               value={email}
-              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 mb-2.5 text-xs rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5"
+              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 mb-2.5 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 focus:outline-none block w-full p-2.5"
               placeholder="example@gmail.com"
               required={true}
             />
 
             <button
               type="submit"
-              className="flex justify-center items-center w-full text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-5 py-2.5 text-center disabled:bg-blue-300 disabled:saturate-30 disabled:py-1 disabled:cursor-not-allowed"
+              className="flex justify-center items-center w-full text-white bg-primary-400 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-100 font-medium rounded-lg text-xs px-5 py-2.5 text-center disabled:bg-primary-300 disabled:saturate-30 disabled:py-1 disabled:cursor-not-allowed"
               disabled={toggleBtn}
             >
               {toggleBtn && (
                 <Loader
                   extraStyles="!static !inset-auto !block !scale-50 !bg-transparent !saturate-100"
-                  loaderColor={toggleBtn ? "fill-blue-300" : ""}
+                  loaderColor={toggleBtn ? "fill-primary-300" : ""}
                 />
               )}
               Next

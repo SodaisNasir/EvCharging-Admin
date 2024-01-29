@@ -1,9 +1,10 @@
 import GeneralPage from "../GeneralPage";
 import { base_url, token } from "../../utils/url";
 import { useState, useEffect, useContext } from "react";
-import { convertPropsToObject, fetchData, modifyData } from "../../utils";
+import { convert24TimeTo12, convertPropsToObject, fetchData, modifyData } from "../../utils";
 import { AppContext } from "../../context";
 import toast from "react-hot-toast";
+import moment from "moment";
 
 const neededProps = [
   { from: "_id", to: "_id" },
@@ -58,6 +59,21 @@ const Stations = () => {
     },
   ];
 
+  const appendableFields = [
+    {
+      key: "start_time",
+      appendFunc: (key, value, formdata) => {
+        formdata.append(key, convert24TimeTo12(value));
+      },
+    },
+    {
+      key: "end_time",
+      appendFunc: (key, value, formdata) => {
+        formdata.append(key, convert24TimeTo12(value));
+      },
+    },
+  ];
+
   const props = {
     title: "Stations",
     actionCols: ["Bookings", "Reviews", "Ports", "View", "Edit", "Delete"],
@@ -81,6 +97,7 @@ const Stations = () => {
       initialState: template,
       createUrl,
       uploadFields,
+      appendableFields,
       hideFields: ["location"],
       excludeFields: ["_id", "serial_no", "created_at", "updated_at"],
       successCallback: (json) => {
