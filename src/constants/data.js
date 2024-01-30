@@ -1,19 +1,6 @@
 import React from "react";
-import { GiSandsOfTime } from "react-icons/gi";
-import {
-  FaCar,
-  FaChargingStation,
-  FaCheck,
-  FaClipboardList,
-  FaFileInvoiceDollar,
-  FaUsers,
-} from "react-icons/fa";
-import { IoIosNotifications, IoMdBriefcase, IoMdSettings } from "react-icons/io";
-import { FaPersonDigging } from "react-icons/fa6";
-import { BsPersonBadgeFill } from "react-icons/bs";
-import { MdCoPresent, MdOutlinePlaylistAddCheck } from "react-icons/md";
-import { RxLapTimer } from "react-icons/rx";
-import { BiWorld } from "react-icons/bi";
+import { FaCar, FaChargingStation, FaUsers } from "react-icons/fa";
+import { IoIosLock, IoIosNotifications, IoMdSettings } from "react-icons/io";
 
 // Home route
 export const homeRoute = "/users";
@@ -28,24 +15,36 @@ export const navLinks = [
   },
   {
     id: 2,
+    icon: <IoIosLock className="-ml-1 text-xl" />,
+    title: "access",
+    path: "/access",
+    items: [
+      {
+        path: "/access",
+        title: "sub_admin",
+      },
+    ],
+  },
+  {
+    id: 3,
     icon: <FaChargingStation className="-ml-0.5 text-xl" />,
     path: "/stations",
     title: "stations",
   },
   {
-    id: 3,
+    id: 4,
     icon: <FaCar className="-ml-0.5 text-xl" />,
     path: "/vehicles",
     title: "vehicles",
   },
   {
-    id: 4,
+    id: 5,
     path: "/settings",
     title: "settings",
     icon: <IoMdSettings className="-ml-0.5 text-xl" />,
     items: [
       {
-        path: "/settings/country-codes",
+        path: "/settings",
         title: "country_codes",
       },
       {
@@ -64,97 +63,61 @@ export const navLinks = [
   },
 ];
 
-// Dashboard Analytics
-export const dashboardCards = {
-  company: [
-    {
-      title: "Total_Lead",
-      icon: <IoMdBriefcase className="text-lg text-blue-500" />,
-      colSpan: "col-span-2 sm:col-span-1",
+// defaultPermissions
+export const defaultPermissions = {
+  users: {
+    view: false,
+    edit: false,
+  },
+  access: {
+    sub_admin: {
+      view: false,
+      create: false,
+      edit: false,
+      permissions: false,
     },
-    {
-      title: "Total_Task",
-      icon: <FaClipboardList className="text-lg text-blue-500" />,
-      colSpan: "col-span-2 sm:col-span-1",
+  },
+  stations: {
+    view: false,
+    create: false,
+    edit: false,
+    delete: false,
+    ports: {
+      view: false,
+      create: false,
+      edit: false,
+      delete: false,
     },
-    {
-      title: "Total_Invoice",
-      icon: <FaFileInvoiceDollar className="text-lg text-blue-500" />,
-      colSpan: "col-span-2 sm:col-span-1",
+    bookings: {
+      view: false,
+      cancel: false,
     },
-    {
-      title: "Total_Invoice_Paid",
-      icon: (
-        <div className="relative">
-          <FaFileInvoiceDollar className="text-lg text-blue-500" />
-          <FaCheck className="absolute text-xs p-0.5 text-blue-500 bg-white rounded-full -bottom-1 -right-1" />
-        </div>
-      ),
-      colSpan: "col-span-2 sm:col-span-1",
+    reviews: false,
+  },
+  vehicles: {
+    view: false,
+    create: false,
+    edit: false,
+  },
+  settings: {
+    country_codes: {
+      view: false,
+      create: false,
+      edit: false,
     },
-    {
-      title: "Total_Invoice_Pending",
-      icon: (
-        <div className="relative">
-          <FaFileInvoiceDollar className="text-lg text-blue-500" />
-          <GiSandsOfTime className="absolute text-sm p-0.5 text-blue-500 bg-white rounded-full -bottom-1.5 -right-1" />
-        </div>
-      ),
-      colSpan: "col-span-2 sm:col-span-1",
+    terms_and_conditions: {
+      view: false,
+      edit: false,
     },
-    {
-      title: "Total_Sales",
-      icon: <BsPersonBadgeFill className="text-lg text-blue-500" />,
-      colSpan: "col-span-2 sm:col-span-1",
+    privacy_policy: {
+      view: false,
+      edit: false,
     },
-    {
-      title: "Total_Workers",
-      icon: <FaPersonDigging className="text-lg text-blue-500" />,
-      colSpan: "col-span-2 sm:col-span-1",
+    faqs: {
+      view: false,
+      edit: false,
     },
-    {
-      title: "Total_Project_Manager",
-      icon: <MdCoPresent className="text-lg text-blue-500" />,
-      colSpan: "col-span-2 sm:col-span-1",
-    },
-  ],
-  project_manager: [
-    {
-      title: "Total_Lead",
-      icon: <IoMdBriefcase className="text-lg text-blue-500" />,
-      colSpan: "col-span-2",
-    },
-    {
-      title: "Total_Task",
-      icon: <FaClipboardList className="text-lg text-blue-500" />,
-      colSpan: "col-span-2 sm:col-span-1",
-    },
-    {
-      title: "Total_Task_Inprogress",
-      icon: <RxLapTimer className="text-lg text-blue-500" />,
-      colSpan: "col-span-2 sm:col-span-1",
-    },
-    {
-      title: "Total_Task_Pending",
-      icon: <GiSandsOfTime className="text-lg text-blue-500" />,
-      colSpan: "col-span-2 sm:col-span-1",
-    },
-    {
-      title: "Total_Task_completed",
-      icon: <MdOutlinePlaylistAddCheck className="text-xl text-blue-500" />,
-      colSpan: "col-span-2 sm:col-span-1",
-    },
-    {
-      title: "Total_Sales",
-      icon: <BsPersonBadgeFill className="text-lg text-blue-500" />,
-      colSpan: "col-span-2 sm:col-span-1",
-    },
-    {
-      title: "Total_Workers",
-      icon: <FaPersonDigging className="text-lg text-blue-500" />,
-      colSpan: "col-span-2 sm:col-span-1",
-    },
-  ],
+  },
 };
 
 // Notification Icons

@@ -1,9 +1,10 @@
 import GeneralPage from "./GeneralPage";
 import { base_url, token } from "../utils/url";
-import { useState, useEffect } from "react";
-import { convertPropsToObject, fetchData } from "../utils";
+import { useState, useEffect, useContext } from "react";
+import { convertPropsToObject, fetchData, getObjProperty } from "../utils";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
+import { AppContext } from "../context";
 
 const neededProps = [
   "_id",
@@ -24,6 +25,7 @@ const editUrl = `${base_url}/admin/edit_user_detail`;
 
 const Users = () => {
   const { station_id } = useParams();
+  const { user } = useContext(AppContext);
   const [, setSearchText] = useState("");
   const [data, setData] = useState(null);
   const [reload, setReload] = useState(false);
@@ -32,6 +34,9 @@ const Users = () => {
     items: [],
     curItems: [],
   });
+
+  const permissions = user?.permissions;
+  const hasEditAccess = getObjProperty(permissions, "users.edit");
 
   const search = (e) => {
     const str = e.target.value;
@@ -67,7 +72,7 @@ const Users = () => {
       key: "status",
       title: "Status",
       arr: ["active", "suspend", "delete"],
-      getOption: val => val,
+      getOption: (val) => val,
     },
   ];
 
@@ -88,6 +93,9 @@ const Users = () => {
     setData,
     template,
     isLoading,
+    actions: {
+      hasEditAccess,
+    },
     search: {
       type: "text",
       onChange: search,
@@ -105,9 +113,7 @@ const Users = () => {
       uploadFields,
       dropdownFields,
       appendableFields,
-      hideFields: [
-        "_id",
-      ],
+      hideFields: ["_id"],
       excludeFields: [
         "_social_id",
         "_country_code_id",

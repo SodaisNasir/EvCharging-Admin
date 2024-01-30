@@ -1,8 +1,14 @@
 import GeneralPage from "../GeneralPage";
 import { base_url, token } from "../../utils/url";
-import { useState, useEffect } from "react";
-import { convertPropsToObject, fetchData, modifyData } from "../../utils";
+import { useState, useEffect, useContext } from "react";
+import {
+  convertPropsToObject,
+  fetchData,
+  getObjProperty,
+  modifyData,
+} from "../../utils";
 import { useParams } from "react-router-dom";
+import { AppContext } from "../../context";
 
 const neededProps = [
   "_id",
@@ -22,6 +28,7 @@ const showAllBookings = `${base_url}/admin/station_detail`;
 const cancelUrl = `${base_url}/admin/cancel_booking`;
 
 const Bookings = () => {
+  const { user } = useContext(AppContext);
   const { station_id } = useParams();
   const [, setSearchText] = useState("");
   const [data, setData] = useState(null);
@@ -58,6 +65,9 @@ const Bookings = () => {
     }
   };
 
+  const permissions = user?.permissions;
+  const hasCancelBookingAccess = getObjProperty(permissions, "stations.bookings.cancel");
+
   const dollarFields = ["amount"];
 
   const props = {
@@ -69,6 +79,7 @@ const Bookings = () => {
     isLoading,
     actions: {
       cancelUrl,
+      hasCancelBookingAccess,
     },
     search: {
       type: "text",

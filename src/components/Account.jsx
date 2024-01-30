@@ -26,6 +26,7 @@ export const DropdownContainer = ({
 const Account = ({ toggle, setSingleToggle }) => {
   const navigate = useNavigate();
   const { user, setUser } = useContext(AppContext);
+  const role = user?.admin_id ? user.role_id : "Admin";
 
   const logout = useCallback(() => {
     setUser(null);
@@ -69,7 +70,7 @@ const Account = ({ toggle, setSingleToggle }) => {
         )}
         <p className="flex flex-col text-xs font-medium capitalize whitespace-nowrap">
           {user?.name}
-          <span className="text-[10px] font-normal">Admin</span>
+          <span className="text-[10px] font-normal">{role}</span>
         </p>
         <FaChevronDown className={`text-sm ${toggle ? "rotate-180" : ""}`} />
       </div>

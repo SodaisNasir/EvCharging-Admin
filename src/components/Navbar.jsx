@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { navLinks } from "../constants/data";
 import { VscClose } from "react-icons/vsc";
+import { AppContext } from "../context";
 
 const Navbar = ({ toggle, setToggle }) => {
+  const { user } = useContext(AppContext);
+  const permissions = user?.permissions;
+
   return (
     <>
       <nav
@@ -21,34 +25,27 @@ const Navbar = ({ toggle, setToggle }) => {
             <VscClose />
           </button>
 
-          {/* <img className="w-2/3 mb-10" src={Logo} alt="EvCharging Administator logo" /> */}
           <h1>EvCharging</h1>
 
           {navLinks.map((data) => (
-            <NavItem key={data.title} data={data} />
+            <NavItem {...{ key: data.title, data, permissions }} />
           ))}
         </div>
-
-        {/* <div>
-          {bottomNavItems.map((data, indx) => (
-            <BottomNavItem
-              key={data.title}
-              {...data}
-              isLast={bottomNavItems.length - 1 === indx}
-            />
-          ))}
-        </div> */}
       </nav>
     </>
   );
 };
 
-const NavItem = ({ data }) => {
+const NavItem = ({ data, permissions }) => {
   const location = useLocation();
   const [toggle, setToggle] = useState(false);
 
   // if Nav item is a link
   if (!data.items) {
+    if (permissions && !permissions[data.title].view) {
+      return null;
+    }
+
     return (
       <NavLink
         to={data.path}
@@ -58,7 +55,6 @@ const NavItem = ({ data }) => {
           } flex items-center hover:text-primary-500 my-4`;
         }}
       >
-        {/* <img className="w-4" src={data.icon} alt="icon" /> */}
         {data.icon}
         <span className="ml-2 text-xs capitalize">
           {data.title.replaceAll("_", " ")}
@@ -67,7 +63,23 @@ const NavItem = ({ data }) => {
     );
   }
 
-  // if Nav item is a Dropdown
+  // if Nav item is a list & if user has not permission to any of it's child
+  if (
+    permissions &&
+    data.items
+      .map((e) => e.title)
+      .every((childTitle) => {
+        let hasPermission = permissions[data.title][childTitle.toLowerCase()];
+        hasPermission =
+          typeof hasPermission === "object"
+            ? hasPermission.view
+            : hasPermission;
+        return !hasPermission;
+      })
+  ) {
+    return null;
+  }
+
   return (
     <>
       <div
@@ -78,7 +90,6 @@ const NavItem = ({ data }) => {
         }`}
         onClick={() => setToggle(!toggle)}
       >
-        {/* <img className="w-4" src={data.icon} alt="icon" /> */}
         {data.icon}
         <span className="ml-2 text-xs capitalize">
           {data.title.replaceAll("_", " ")}
@@ -89,6 +100,8 @@ const NavItem = ({ data }) => {
       >
         <div className="absolute left-[3px] bg-[#909090] w-0.5 h-full -z-10" />
         {data.items.map(({ path, title }) => {
+          if (permissions && !permissions[data.title][title.toLowerCase()].view)
+            return null;
           return (
             <NavLink
               key={title}

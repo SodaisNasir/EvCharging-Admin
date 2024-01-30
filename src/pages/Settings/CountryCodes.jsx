@@ -1,8 +1,9 @@
 import GeneralPage from "../GeneralPage";
 import { base_url, token } from "../../utils/url";
-import { useState, useEffect } from "react";
-import { convertPropsToObject, fetchData } from "../../utils";
+import { useState, useEffect, useContext } from "react";
+import { convertPropsToObject, fetchData, getObjProperty } from "../../utils";
 import toast from "react-hot-toast";
+import { AppContext } from "../../context";
 
 const neededProps = [
   { from: "_id", to: "id" },
@@ -19,6 +20,7 @@ const createUrl = `${base_url}/common/create_country_code`;
 const deleteUrl = `${base_url}/common/delete_country_code`;
 
 const CountryCodes = () => {
+  const { user } = useContext(AppContext);
   const [, setSearchText] = useState("");
   const [data, setData] = useState(null);
   const [reload, setReload] = useState(false);
@@ -27,6 +29,10 @@ const CountryCodes = () => {
     items: [],
     curItems: [],
   });
+
+  const permissions = user?.permissions;
+  const hasEditAccess = getObjProperty(permissions, "settings.country_code.edit");
+  const hasCreateAccess = getObjProperty(permissions, "settings.country_code.create");
 
   const search = (e) => {
     const str = e.target.value;
@@ -43,7 +49,7 @@ const CountryCodes = () => {
               ?.toLowerCase()
               ?.includes(str?.toLowerCase());
 
-            return !uploadFields.find(e => e.key === key) && matched;
+            return !uploadFields.find((e) => e.key === key) && matched;
           })
         ),
       }));
@@ -75,6 +81,9 @@ const CountryCodes = () => {
     template,
     isLoading,
     deleteUrl,
+    actions: {
+      hasEditAccess,
+    },
     search: {
       type: "text",
       onChange: search,
@@ -118,6 +127,7 @@ const CountryCodes = () => {
     },
     headerStyles:
       "min-[490px]:flex-row min-[490px]:space-y-0 min-[490px]:space-x-2 max-[490px]:flex-col max-[490px]:space-y-2 max-[490px]:space-x-0 max-[840px]:flex-col max-[840px]:space-y-2 max-[840px]:space-x-0 !items-baseline",
+    hasCreateAccess,
   };
 
   useEffect(() => {

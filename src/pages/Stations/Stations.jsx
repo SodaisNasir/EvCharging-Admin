@@ -1,10 +1,9 @@
 import GeneralPage from "../GeneralPage";
 import { base_url, token } from "../../utils/url";
 import { useState, useEffect, useContext } from "react";
-import { convert24TimeTo12, convertPropsToObject, fetchData, modifyData } from "../../utils";
+import { convert24TimeTo12, convertPropsToObject, fetchData, getObjProperty, modifyData } from "../../utils";
 import { AppContext } from "../../context";
 import toast from "react-hot-toast";
-import moment from "moment";
 
 const neededProps = [
   { from: "_id", to: "_id" },
@@ -33,6 +32,11 @@ const Stations = () => {
     items: [],
     curItems: [],
   });
+
+  const permissions = user?.permissions;
+  const hasCreateAccess = getObjProperty(permissions, "stations.create");
+  const hasDeleteAccess = getObjProperty(permissions, "stations.delete");
+  const hasEditAccess = getObjProperty(permissions, "stations.edit");
 
   const search = (e) => {
     const str = e.target.value;
@@ -82,6 +86,10 @@ const Stations = () => {
     template,
     isLoading,
     deleteUrl,
+    actions: {
+      hasDeleteAccess,
+      hasEditAccess,
+    },
     search: {
       type: "text",
       onChange: search,
@@ -139,6 +147,7 @@ const Stations = () => {
     },
     headerStyles:
       "min-[490px]:flex-row min-[490px]:space-y-0 min-[490px]:space-x-2  max-[490px]:flex-col max-[490px]:space-y-2 max-[490px]:space-x-0 max-[840px]:flex-col max-[840px]:space-y-2 max-[840px]:space-x-0 !items-baseline",
+    hasCreateAccess,
   };
 
   useEffect(() => {

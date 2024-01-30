@@ -16,22 +16,40 @@ import {
   Users,
   Reviews,
   Vehicles,
-  CountriesCodes,
+  CountryCodes,
   TermsAndConditions,
   FAQs,
   PrivacyPolicy,
+  SubAdmin,
 } from "../pages";
 import { base_url } from "../utils/url";
-import CountryCodes from "../pages/Settings/CountryCodes";
+import { homeRoute } from "../constants/data";
+import { parseJson } from "../utils";
 
 // Router component handles the routing of the application
 const Router = () => {
   const { user, setUser } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(true);
+  const permissions = user?.permissions;
 
-  const privateRoutes = (Page) => (user ? <Page /> : <AccessDenied />);
-  const accessPublicRoutes = (Page) =>
-    user ? <Navigate to="/stations" /> : <Page />;
+  const privateRoutes = (Page, path) => {
+    const isBool = typeof path === "boolean";
+    const hasPermission = isBool
+      ? path
+      : permissions
+      ? path
+          .split(".")
+          .reduce(
+            (acc, curr, indx) =>
+              indx === 0 ? (acc = permissions?.[curr]) : (acc = acc?.[curr]),
+            ""
+          )
+      : true;
+
+    return hasPermission ? <Page /> : <AccessDenied />;
+  };
+  const publicRoutes = (Page) =>
+    user ? <Navigate to={homeRoute} /> : <Page />;
 
   const login = useCallback(
     async (email, password) => {
@@ -60,7 +78,11 @@ const Router = () => {
         console.log("json", json);
 
         if (json.status) {
-          const data = json.data;
+          let data = json.data;
+          if (data.permissions && data.permissions !== "undefined") {
+            data.permissions = parseJson(data.permissions);
+          }
+
           console.log("user", data);
 
           setUser(data);
@@ -103,39 +125,63 @@ const Router = () => {
             element={user ? <Layout /> : <Navigate to="/login" replace />}
           >
             <Route path="/stations">
-              <Route index element={privateRoutes(Stations)} />
+              <Route index element={privateRoutes(Stations, "stations.view")} />
               <Route
                 path="/stations/:station_id/reviews"
-                element={privateRoutes(Reviews)}
+                element={privateRoutes(Reviews, "stations.reviews")}
               />
               <Route
                 path="/stations/:station_id/ports"
-                element={privateRoutes(Ports)}
+                element={privateRoutes(Ports, "stations.ports.view")}
               />
               <Route
                 path="/stations/:station_id/bookings"
-                element={privateRoutes(Bookings)}
+                element={privateRoutes(Bookings, "stations.bookings.view")}
               />
             </Route>
-            <Route path="/users" element={privateRoutes(Users)} />
-            <Route path="/vehicles" element={privateRoutes(Vehicles)} />
-
-            <Route>
+            <Route path="/users" element={privateRoutes(Users, "users.view")} />
+            <Route path="/access">
               <Route
-                path="/settings/country-codes"
-                element={privateRoutes(CountryCodes)}
+                index
+                element={privateRoutes(SubAdmin, "access.sub_admin.view")}
+              />
+            </Route>
+            <Route
+              path="/vehicles"
+              element={privateRoutes(Vehicles, "vehicles.view")}
+            />
+
+            <Route path="/settings">
+              <Route
+                index
+                element={privateRoutes(
+                  CountryCodes,
+                  "settings.country_codes.view"
+                )}
               />
               <Route
                 path="/settings/terms-and-conditions"
-                element={privateRoutes(TermsAndConditions)}
+                element={privateRoutes(
+                  TermsAndConditions,
+                  "settings.terms_and_conditions.view"
+                )}
               />
-              <Route path="/settings/faqs" element={privateRoutes(FAQs)} />
+              <Route
+                path="/settings/faqs"
+                element={privateRoutes(FAQs, "settings.faqs.view")}
+              />
               <Route
                 path="/settings/privacy-policy"
-                element={privateRoutes(PrivacyPolicy)}
+                element={privateRoutes(
+                  PrivacyPolicy,
+                  "settings.privacy_policy.view"
+                )}
               />
             </Route>
-            <Route path="/edit-profile" element={privateRoutes(EditProfile)} />
+            <Route
+              path="/edit-profile"
+              element={privateRoutes(EditProfile, true)}
+            />
           </Route>
 
           <Route path="*" element={<Page404 />} />
@@ -143,11 +189,11 @@ const Router = () => {
           <Route path="/change-password" element={<ChangePassword />} />
           <Route
             path="/forgot-password"
-            element={accessPublicRoutes(ForgotPassword)}
+            element={publicRoutes(ForgotPassword)}
           />
           <Route
             path="/email-verification"
-            element={accessPublicRoutes(EmailVerification)}
+            element={publicRoutes(EmailVerification)}
           />
         </Routes>
       </BrowserRouter>

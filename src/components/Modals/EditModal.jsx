@@ -74,8 +74,10 @@ const EditModal = ({
       console.log("json", json);
 
       if (json.status) {
-        successCallback && successCallback(json);
+        successCallback && successCallback(json, state);
         close();
+      } else if (!json.status) {
+        toast.error(json.message, { duration: 2000 });
       }
     } catch (error) {
       toast.error("Unable to update!", { duration: 2000 });
@@ -96,7 +98,7 @@ const EditModal = ({
         : "opacity-0 pointer-events-none",
     },
     content: `bg-white rounded-md w-full mx-5 ${
-      gridCols === 2 ? "max-w-xl" : "max-w-xs"
+      gridCols === 2 ? "max-w-xl" : "max-w-sm"
     }`,
     header: "flex justify-between items-center py-3 px-4 border-b",
     main: {

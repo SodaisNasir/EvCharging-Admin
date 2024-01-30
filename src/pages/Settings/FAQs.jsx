@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { fetchData, replaceParaWithDivs } from "../../utils";
+import React, { useState, useEffect, useContext } from "react";
+import { fetchData, getObjProperty, replaceParaWithDivs } from "../../utils";
 import { Button, Loader, Page } from "../../components";
 import { base_url, token } from "../../utils/url";
 import Editor from "../../components/Editor";
 import toast from "react-hot-toast";
+import { AppContext } from "../../context";
 
 const FAQs = () => {
+  const { user } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [state, setState] = useState({ value: "" });
+
+  const permissions = user?.permissions;
+  const hasEditAccess = getObjProperty(permissions, "settings.faqs.edit");
 
   const handleChange = (value) => setState({ ...state, value });
   const handleSubmit = async () => {
@@ -82,6 +87,7 @@ const FAQs = () => {
                 {...{
                   state: state.value,
                   handleChange,
+                  readOnly: !hasEditAccess,
                 }}
               />
             </div>

@@ -99,7 +99,7 @@ SELECT {
     box-shadow: 0 0 #42b454;
     height: 32px;
   }
-
+  
   40% {
     opacity: 1;
     box-shadow: 0 -8px #42b454;
@@ -121,4 +121,8 @@ SELECT {
     box-shadow: 0 -8px #42b454;
     height: 40px;
   }
+}
+
+input[type="checkbox"] {
+  accent-color: #3ba24c;
 }

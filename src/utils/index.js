@@ -39,6 +39,14 @@ export const convertPropsToObject = (neededProps) =>
     )
   );
 
+export const getObjProperty = (obj, path = "") =>
+  path
+    .split(".")
+    .reduce(
+      (acc, curr, indx) => (indx === 0 ? (acc = obj?.[curr]) : (acc = acc?.[curr])),
+      ""
+    );
+
 export const replaceParaWithDivs = (htmlString) =>
   htmlString
     .replace(/<p(.*?)>/gi, (m) =>

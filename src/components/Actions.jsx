@@ -3,6 +3,7 @@ import { AiFillEye, AiFillFolderOpen } from "react-icons/ai";
 import { FaFileVideo, FaFileImage } from "react-icons/fa6";
 import { FaCalendarCheck, FaMegaport } from "react-icons/fa";
 import { CgUnblock } from "react-icons/cg";
+import { HiLockClosed } from "react-icons/hi";
 import {
   MdBlock,
   MdDelete,
@@ -26,10 +27,15 @@ const Actions = ({
   setViewModal,
   setImagesViewer,
   setVideosViewer,
+  setPermissionsModal,
   setNotificationModal,
   blockUrl,
   deleteUrl,
   cancelUrl,
+  hasEditAccess,
+  hasDeleteAccess,
+  hasPermissionsAccess,
+  hasCancelBookingAccess,
 }) => {
   const navigate = useNavigate();
   const [blockUser, setBlockUser] = useState(
@@ -37,16 +43,15 @@ const Actions = ({
   );
 
   const remove = async () => {
+    if (!hasDeleteAccess) return toast.error("You don't have access to delete!");
+
     try {
       const isFunction = typeof deleteUrl === "function";
       const formdata = new FormData();
       formdata.append("_id", data._id);
       console.log("_id", data._id);
       const headers = new Headers();
-      headers.append(
-        "Authorization",
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTg4MTAyMjFkYWU3N2Nk"
-      );
+      headers.append("Authorization", `Bearer ${token}`);
 
       const requestOptions = {
         headers,
@@ -115,6 +120,8 @@ const Actions = ({
   };
 
   const cancelBooking = async () => {
+    if (!hasCancelBookingAccess) return toast.error("You don't have access to cancel booking!");
+
     try {
       const formdata = new FormData();
       formdata.append("_id", data._id);
@@ -258,11 +265,33 @@ const Actions = ({
           </button>
         </td>
       );
+    } else if (name === "Permissions") {
+      element = (
+        <td className="self-center px-6 py-2 pt-4 text-lg text-center">
+          <button
+            onClick={() =>
+              hasPermissionsAccess
+                ? setPermissionsModal({
+                    isOpen: true,
+                    data,
+                  })
+                : toast.error("You don't have access to permissions!")
+            }
+            className="font-medium text-gray-600 hover:text-gray-800"
+          >
+            <HiLockClosed />
+          </button>
+        </td>
+      );
     } else if (name === "Edit") {
       element = (
         <td className="self-center px-6 py-2 pt-4 text-lg text-center">
           <button
-            onClick={() => setEditModal({ isOpen: true, data })}
+            onClick={() =>
+              hasEditAccess
+                ? setEditModal({ isOpen: true, data })
+                : toast.error("You don't have access to edit!")
+            }
             className="font-medium text-gray-600 hover:text-gray-800"
           >
             <MdModeEdit />

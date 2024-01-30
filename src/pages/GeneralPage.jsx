@@ -11,9 +11,10 @@ import {
   VideosViewer,
   ViewModal,
   DropdownField,
+  MediaModal,
+  PermissionsModal,
 } from "../components";
 import { BiSearch } from "react-icons/bi";
-import MediaModal from "../components/Modals/MediaModal";
 
 const GeneralPage = ({
   title,
@@ -23,6 +24,7 @@ const GeneralPage = ({
   setData,
   isLoading,
   pagination,
+  permissionsModalProps = {},
   imagesViewerProps = {},
   videosViewerProps = {},
   createModalProps = {},
@@ -36,6 +38,7 @@ const GeneralPage = ({
   search,
   headerButtons,
   inputContainer,
+  hasCreateAccess = true,
 }) => {
   const [selected, setSelected] = useState([]);
   const [editModal, setEditModal] = useState({ isOpen: false, data: null });
@@ -58,6 +61,10 @@ const GeneralPage = ({
   const [mediaModal, setMediaModal] = useState({
     isOpen: false,
     media: null,
+  });
+  const [permissionsModal, setPermissionsModal] = useState({
+    isOpen: false,
+    data: null,
   });
 
   const handleClick = () =>
@@ -106,7 +113,7 @@ const GeneralPage = ({
           <div className="flex items-center">
             {headerButtons}
 
-            {createModalProps.initialState && (
+            {createModalProps.initialState && hasCreateAccess && (
               <Button title="Create" handleClick={handleClick} />
             )}
           </div>
@@ -148,6 +155,7 @@ const GeneralPage = ({
                 setMediaModal,
                 setImagesViewer,
                 setVideosViewer,
+                setPermissionsModal,
                 setPaginatedData: pagination?.setPaginatedData,
                 ...actions,
               },
@@ -180,6 +188,15 @@ const GeneralPage = ({
           />
         )}
         {mediaModal.isOpen && <MediaModal {...{ mediaModal, setMediaModal }} />}
+        {permissionsModal.isOpen && (
+          <PermissionsModal
+            {...{
+              permissionsModal,
+              setPermissionsModal,
+              ...permissionsModalProps,
+            }}
+          />
+        )}
       </main>
     </Page>
   );

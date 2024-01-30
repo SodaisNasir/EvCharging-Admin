@@ -1,9 +1,10 @@
 import GeneralPage from "../GeneralPage";
 import { base_url, token } from "../../utils/url";
-import { useState, useEffect } from "react";
-import { convertPropsToObject, fetchData } from "../../utils";
+import { useState, useEffect, useContext } from "react";
+import { convertPropsToObject, fetchData, getObjProperty } from "../../utils";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
+import { AppContext } from "../../context";
 
 const neededProps = [
   "_id",
@@ -21,6 +22,7 @@ const createUrl = `${base_url}/admin/create_station_port`;
 const deleteUrl = `${base_url}/admin/delete_port`;
 
 const Ports = () => {
+  const { user } = useContext(AppContext);
   const { station_id } = useParams();
   const [, setSearchText] = useState("");
   const [data, setData] = useState(null);
@@ -55,6 +57,11 @@ const Ports = () => {
       }));
     }
   };
+
+  const permissions = user?.permissions;
+  const hasEditAccess = getObjProperty(permissions, "stations.ports.edit");
+  const hasCreateAccess = getObjProperty(permissions, "stations.ports.create");
+  const hasDeleteAccess = getObjProperty(permissions, "stations.ports.delete");
 
   const dollarFields = ["unit_price"];
 
@@ -92,6 +99,10 @@ const Ports = () => {
     template,
     isLoading,
     deleteUrl,
+    actions: {
+      hasEditAccess,
+      hasDeleteAccess,
+    },
     search: {
       type: "text",
       onChange: search,
@@ -137,6 +148,7 @@ const Ports = () => {
     },
     headerStyles:
       "min-[490px]:flex-row min-[490px]:space-y-0 min-[490px]:space-x-2 max-[490px]:flex-col max-[490px]:space-y-2 max-[490px]:space-x-0 max-[840px]:flex-col max-[840px]:space-y-2 max-[840px]:space-x-0 !items-baseline",
+    hasCreateAccess,
   };
 
   useEffect(() => {

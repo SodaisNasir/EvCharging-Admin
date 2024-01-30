@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { VscClose } from "react-icons/vsc";
 import { getInputType } from "../../utils";
 import { DropdownField, TextArea, UploadField } from "../Fields";
@@ -77,7 +77,7 @@ const CreateModal = ({
       if (!json.status) {
         toast.error(json.message);
       } else if (json.status) {
-        successCallback && successCallback(json);
+        successCallback && successCallback(json, state);
         close();
       }
     } catch (error) {
@@ -100,7 +100,7 @@ const CreateModal = ({
         : "opacity-0 pointer-events-none",
     },
     content: `bg-white rounded-md w-full mx-5 ${
-      gridCols === 2 ? "max-w-xl" : "max-w-xs"
+      gridCols === 2 ? "max-w-xl" : "max-w-sm"
     }`,
     header: "flex justify-between items-center py-3 px-4 border-b",
     main: {

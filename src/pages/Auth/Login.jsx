@@ -8,6 +8,7 @@ import { AppContext } from "../../context";
 import { Button, Page } from "../../components";
 import { homeRoute } from "../../constants/data";
 import toast from "react-hot-toast";
+import { parseJson } from "../../utils";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -60,6 +61,9 @@ const Login = () => {
 
       if (json.status) {
         let data = json.data;
+        if (data.permissions && data.permissions !== "undefined") {
+          data.permissions = parseJson(data.permissions)
+        }
 
         toast.success("Login successful!", { duration: 2000 });
         localStorage.setItem("user", JSON.stringify(data));
