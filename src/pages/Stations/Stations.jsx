@@ -34,9 +34,9 @@ const Stations = () => {
   });
 
   const permissions = user?.permissions;
-  const hasCreateAccess = getObjProperty(permissions, "stations.create");
-  const hasDeleteAccess = getObjProperty(permissions, "stations.delete");
-  const hasEditAccess = getObjProperty(permissions, "stations.edit");
+  const hasCreateAccess = user?.role_id === "super_admin" || getObjProperty(permissions, "stations.create");
+  const hasDeleteAccess = user?.role_id === "super_admin" || getObjProperty(permissions, "stations.delete");
+  const hasEditAccess = user?.role_id === "super_admin" || getObjProperty(permissions, "stations.edit");
 
   const search = (e) => {
     const str = e.target.value;

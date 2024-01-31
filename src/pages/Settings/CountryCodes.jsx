@@ -31,8 +31,8 @@ const CountryCodes = () => {
   });
 
   const permissions = user?.permissions;
-  const hasEditAccess = getObjProperty(permissions, "settings.country_code.edit");
-  const hasCreateAccess = getObjProperty(permissions, "settings.country_code.create");
+  const hasEditAccess = user?.role_id === "super_admin" || getObjProperty(permissions, "settings.country_code.edit");
+  const hasCreateAccess = user?.role_id === "super_admin" || getObjProperty(permissions, "settings.country_code.create");
 
   const search = (e) => {
     const str = e.target.value;

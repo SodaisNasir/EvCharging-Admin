@@ -66,7 +66,7 @@ const Bookings = () => {
   };
 
   const permissions = user?.permissions;
-  const hasCancelBookingAccess = getObjProperty(permissions, "stations.bookings.cancel");
+  const hasCancelBookingAccess = user?.role_id === "super_admin" || getObjProperty(permissions, "stations.bookings.cancel");
 
   const dollarFields = ["amount"];
 

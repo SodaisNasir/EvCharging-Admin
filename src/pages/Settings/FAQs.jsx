@@ -13,7 +13,7 @@ const FAQs = () => {
   const [state, setState] = useState({ value: "" });
 
   const permissions = user?.permissions;
-  const hasEditAccess = getObjProperty(permissions, "settings.faqs.edit");
+  const hasEditAccess = user?.role_id === "super_admin" || getObjProperty(permissions, "settings.faqs.edit");
 
   const handleChange = (value) => setState({ ...state, value });
   const handleSubmit = async () => {

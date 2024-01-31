@@ -36,7 +36,7 @@ const Users = () => {
   });
 
   const permissions = user?.permissions;
-  const hasEditAccess = getObjProperty(permissions, "users.edit");
+  const hasEditAccess = user?.role_id === "super_admin" || getObjProperty(permissions, "users.edit");
 
   const search = (e) => {
     const str = e.target.value;

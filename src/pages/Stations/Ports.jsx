@@ -59,9 +59,9 @@ const Ports = () => {
   };
 
   const permissions = user?.permissions;
-  const hasEditAccess = getObjProperty(permissions, "stations.ports.edit");
-  const hasCreateAccess = getObjProperty(permissions, "stations.ports.create");
-  const hasDeleteAccess = getObjProperty(permissions, "stations.ports.delete");
+  const hasEditAccess = user?.role_id === "super_admin" || getObjProperty(permissions, "stations.ports.edit");
+  const hasCreateAccess = user?.role_id === "super_admin" || getObjProperty(permissions, "stations.ports.create");
+  const hasDeleteAccess = user?.role_id === "super_admin" || getObjProperty(permissions, "stations.ports.delete");
 
   const dollarFields = ["unit_price"];
 

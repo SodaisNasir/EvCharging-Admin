@@ -34,12 +34,12 @@ const SubAdmin = () => {
   });
 
   const permissions = user?.permissions;
-  const hasCreateAccess = getObjProperty(
+  const hasCreateAccess = user?.role_id === "super_admin" || getObjProperty(
     permissions,
     "access.sub_admin.create"
   );
-  const hasEditAccess = getObjProperty(permissions, "access.sub_admin.edit");
-  const hasPermissionsAccess = getObjProperty(
+  const hasEditAccess = user?.role_id === "super_admin" || getObjProperty(permissions, "access.sub_admin.edit");
+  const hasPermissionsAccess = user?.role_id === "super_admin" || getObjProperty(
     permissions,
     "access.sub_admin.permissions"
   );

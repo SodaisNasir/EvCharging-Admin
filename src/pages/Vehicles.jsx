@@ -1,14 +1,15 @@
 import GeneralPage from "./GeneralPage";
 import { base_url, token } from "../utils/url";
-import { useState, useEffect } from "react";
-import { convertPropsToObject, fetchData } from "../utils";
+import { useState, useEffect, useContext } from "react";
+import { convertPropsToObject, fetchData, getObjProperty } from "../utils";
 import toast from "react-hot-toast";
+import { AppContext } from "../context";
 
 const neededProps = [
   { from: "_id", to: "id" },
   "vehicle_name",
   "model_no",
-  {from: "date", to: "created_at"},
+  { from: "date", to: "created_at" },
 ];
 const template = convertPropsToObject(neededProps);
 const showAllVehicles = `${base_url}/common/fetch_vehicles`;
@@ -17,6 +18,7 @@ const createUrl = `${base_url}/common/create_vehicle`;
 // const detailsUrl = `${base_url}/common/fetch_vehicle_detail`;
 
 const Vehicles = () => {
+  const { user } = useContext(AppContext);
   const [, setSearchText] = useState("");
   const [data, setData] = useState(null);
   const [reload, setReload] = useState(false);
@@ -25,6 +27,14 @@ const Vehicles = () => {
     items: [],
     curItems: [],
   });
+
+  const permissions = user?.permissions;
+  const hasCreateAccess =
+    user?.role_id === "super_admin" ||
+    getObjProperty(permissions, "vehicles.create");
+  const hasEditAccess =
+    user?.role_id === "super_admin" ||
+    getObjProperty(permissions, "vehicles.edit");
 
   const search = (e) => {
     const str = e.target.value;
@@ -73,6 +83,9 @@ const Vehicles = () => {
     template,
     isLoading,
     // deleteUrl,
+    actions: {
+      hasEditAccess,
+    },
     search: {
       type: "text",
       onChange: search,
@@ -114,6 +127,7 @@ const Vehicles = () => {
     },
     headerStyles:
       "min-[490px]:flex-row min-[490px]:space-y-0 min-[490px]:space-x-2 max-[490px]:flex-col max-[490px]:space-y-2 max-[490px]:space-x-0 max-[840px]:flex-col max-[840px]:space-y-2 max-[840px]:space-x-0 !items-baseline",
+    hasCreateAccess,
   };
 
   useEffect(() => {

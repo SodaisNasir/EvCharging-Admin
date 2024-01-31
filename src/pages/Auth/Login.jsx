@@ -14,9 +14,9 @@ const Login = () => {
   const navigate = useNavigate();
   const { user, setUser } = useContext(AppContext);
 
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("admin@gmail.com");
   const [toggleBtn, setToggleBtn] = useState(false);
-  const [password, setPassword] = useState({ isVisible: false, value: "" });
+  const [password, setPassword] = useState({ isVisible: false, value: "testtest" });
 
   if (user) {
     return <Navigate to={homeRoute} replace />;
@@ -43,18 +43,18 @@ const Login = () => {
     let json = null;
 
     try {
-      const myHeaders = new Headers();
-      myHeaders.append("Authorization", `Bearer ${token}`);
+      const headers = new Headers();
+      headers.append("Authorization", `Bearer ${token}`);
+      headers.append("accept", "application/json");
 
       const formdata = new FormData();
       formdata.append("email", email);
       formdata.append("password", password.value);
 
       const res = await fetch(`${base_url}/admin/login`, {
+        headers,
         method: "POST",
-        headers: myHeaders,
         body: formdata,
-        redirect: "follow",
       });
 
       json = await res.json();
@@ -62,7 +62,7 @@ const Login = () => {
       if (json.status) {
         let data = json.data;
         if (data.permissions && data.permissions !== "undefined") {
-          data.permissions = parseJson(data.permissions)
+          data.permissions = parseJson(data.permissions);
         }
 
         toast.success("Login successful!", { duration: 2000 });
@@ -133,7 +133,10 @@ const Login = () => {
                 </div>
               </div>
               <div className="w-full text-right text-[11px] font-medium mb-3 mt-2">
-                <Link to="/forgot-password" className="hover:text-primary-400 hover:underline">
+                <Link
+                  to="/forgot-password"
+                  className="hover:text-primary-400 hover:underline"
+                >
                   Forgot Password?
                 </Link>
               </div>

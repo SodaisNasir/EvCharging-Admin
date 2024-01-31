@@ -75,14 +75,14 @@ const Account = ({ toggle, setSingleToggle }) => {
         <FaChevronDown className={`text-sm ${toggle ? "rotate-180" : ""}`} />
       </div>
       {toggle && (
-        <DropdownContainer extraStyles="!w-full !min-w-max !p-0 overflow-hidden">
+        <DropdownContainer extraStyles="!w-full !min-w-max !p-1 overflow-hidden">
           {arr.map((elem, indx) => (
             <li
               key={elem.title}
               onClick={elem.clickHandler}
-              className={`flex m-1 ${
+              className={`flex ${
                 indx === arr.length - 1
-                  ? "mb-1 mt-0 hover:!bg-red-300/40 hover:text-red-600"
+                  ? "hover:!bg-red-300/40 hover:text-red-600"
                   : indx === 0
                   ? "mb-0"
                   : "my-0"

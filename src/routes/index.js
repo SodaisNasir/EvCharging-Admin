@@ -44,7 +44,7 @@ const Router = () => {
               indx === 0 ? (acc = permissions?.[curr]) : (acc = acc?.[curr]),
             ""
           )
-      : true;
+      : user?.role_id === "super_admin";
 
     return hasPermission ? <Page /> : <AccessDenied />;
   };

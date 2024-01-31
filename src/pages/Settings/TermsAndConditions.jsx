@@ -13,7 +13,7 @@ const TermsAndConditions = () => {
   const [state, setState] = useState({ value: "" });
 
   const permissions = user?.permissions;
-  const hasEditAccess = getObjProperty(permissions, "settings.terms_and_conditions.edit");
+  const hasEditAccess = user?.role_id === "super_admin" || getObjProperty(permissions, "settings.terms_and_conditions.edit");
 
   const handleChange = (value) => setState({ ...state, value });
   const handleSubmit = async () => {
