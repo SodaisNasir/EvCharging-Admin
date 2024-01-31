@@ -1,3 +1,4 @@
+import moment from "moment";
 import { VscClose } from "react-icons/vsc";
 
 const ViewModal = ({
@@ -8,9 +9,11 @@ const ViewModal = ({
   longFields = [],
   linkFields = [],
   imageFields = [],
+  timeFields = [],
 }) => {
   const data = viewModal.data;
   const keys = Object.keys(data).filter((e) => !excludeFields.includes(e));
+  const timeFieldsKeys = timeFields.map((e) => e.key);
 
   const close = () => setViewModal((prev) => ({ ...prev, isOpen: false }));
 
@@ -46,7 +49,9 @@ const ViewModal = ({
             <div className="p-5 space-y-6 max-h-[72vh] overflow-y-scroll">
               <div className="grid grid-cols-6 gap-3">
                 {keys.map((elem) => {
-                  const title = elem.replace(/_/g, " ").replace(/^id|\sid/ig, (match) => match.toUpperCase());
+                  const title = elem
+                    .replace(/_/g, " ")
+                    .replace(/^id|\sid/gi, (match) => match.toUpperCase());
 
                   if (hideFields.includes(elem)) return null;
 
@@ -82,6 +87,10 @@ const ViewModal = ({
                           >
                             {data[elem]}
                           </a>
+                        ) : timeFieldsKeys.includes(elem) && data[elem] ? (
+                          moment(data[elem]).format(
+                            timeFields[timeFieldsKeys.indexOf(elem)].format
+                          )
                         ) : elem?.toLowerCase().includes("date/time") ? (
                           new Date(data[elem]).toLocaleString()
                         ) : imageFields.includes(elem) ? (

@@ -1,7 +1,13 @@
 import GeneralPage from "../GeneralPage";
 import { base_url, token } from "../../utils/url";
 import { useState, useEffect, useContext } from "react";
-import { convert24TimeTo12, convertPropsToObject, fetchData, getObjProperty, modifyData } from "../../utils";
+import {
+  convert24TimeTo12,
+  convertPropsToObject,
+  fetchData,
+  getObjProperty,
+  modifyData,
+} from "../../utils";
 import { AppContext } from "../../context";
 import toast from "react-hot-toast";
 
@@ -34,9 +40,15 @@ const Stations = () => {
   });
 
   const permissions = user?.permissions;
-  const hasCreateAccess = user?.role_id === "super_admin" || getObjProperty(permissions, "stations.create");
-  const hasDeleteAccess = user?.role_id === "super_admin" || getObjProperty(permissions, "stations.delete");
-  const hasEditAccess = user?.role_id === "super_admin" || getObjProperty(permissions, "stations.edit");
+  const hasCreateAccess =
+    user?.role_id === "super_admin" ||
+    getObjProperty(permissions, "stations.create");
+  const hasDeleteAccess =
+    user?.role_id === "super_admin" ||
+    getObjProperty(permissions, "stations.delete");
+  const hasEditAccess =
+    user?.role_id === "super_admin" ||
+    getObjProperty(permissions, "stations.edit");
 
   const search = (e) => {
     const str = e.target.value;
@@ -141,6 +153,10 @@ const Stations = () => {
     viewModalProps: {
       excludeFields: ["created_at", "updated_at"],
       longFields: ["station_image"],
+      timeFields: [
+        { key: "start_time", format: "HH:mm A" },
+        { key: "end_time", format: "HH:mm A" },
+      ],
     },
     tableProps: {
       checkboxEnabled: false,

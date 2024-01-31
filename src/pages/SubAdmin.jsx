@@ -12,7 +12,6 @@ const neededProps = [
   "profile_image",
   "name",
   "email",
-  "password",
   { from: "role_id", to: "role" },
   "_permissions",
   "_admin_id",

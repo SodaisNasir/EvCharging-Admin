@@ -24,7 +24,7 @@ import {
 } from "../pages";
 import { base_url } from "../utils/url";
 import { homeRoute } from "../constants/data";
-import { parseJson } from "../utils";
+import { getObjProperty, parseJson } from "../utils";
 
 // Router component handles the routing of the application
 const Router = () => {
@@ -37,13 +37,7 @@ const Router = () => {
     const hasPermission = isBool
       ? path
       : permissions
-      ? path
-          .split(".")
-          .reduce(
-            (acc, curr, indx) =>
-              indx === 0 ? (acc = permissions?.[curr]) : (acc = acc?.[curr]),
-            ""
-          )
+      ? getObjProperty(permissions, path)
       : user?.role_id === "super_admin";
 
     return hasPermission ? <Page /> : <AccessDenied />;
