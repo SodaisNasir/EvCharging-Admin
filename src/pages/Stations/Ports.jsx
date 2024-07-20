@@ -9,6 +9,8 @@ import { AppContext } from "../../context";
 const neededProps = [
   "_id",
   "station_id",
+  "charger_id",
+  "connector_id",
   "port_image",
   "port_name",
   "port_type",
@@ -67,6 +69,8 @@ const Ports = () => {
 
   const initialState = {
     station_id,
+    charger_id: "",
+    connector_id: "",
     port_image: "",
     port_name: "",
     port_type: "",
