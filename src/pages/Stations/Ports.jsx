@@ -15,6 +15,7 @@ const neededProps = [
   "port_name",
   "port_type",
   "unit_price",
+  "charging_power",
   "port_description",
 ];
 const template = convertPropsToObject(neededProps);
@@ -66,6 +67,18 @@ const Ports = () => {
   const hasDeleteAccess = user?.role_id === "super_admin" || getObjProperty(permissions, "stations.ports.delete");
 
   const dollarFields = ["unit_price"];
+  const inputFields = [
+    {
+      key: "charging_power",
+      type: "number",
+      min: 0
+    },
+    {
+      key: "unit_price",
+      type: "number",
+      min: 0
+    },
+  ];
 
   const initialState = {
     station_id,
@@ -75,6 +88,7 @@ const Ports = () => {
     port_name: "",
     port_type: "",
     unit_price: "",
+    charging_power: "",
     port_description: "",
   };
 
@@ -122,6 +136,7 @@ const Ports = () => {
       neededProps,
       initialState,
       uploadFields,
+      inputFields,
       hideFields: ["station_id"],
       textAreaFields: ["port_description"],
       excludeFields: ["_id", "created_at", "updated_at"],
